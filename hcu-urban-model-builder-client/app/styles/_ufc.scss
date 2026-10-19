@@ -1309,6 +1309,27 @@ $dock-radius: (
   font-size: 0.6875rem;
 }
 
+// Text on coloured node headers, chosen per colour for contrast (DESIGN.md).
+$node-header-text: (
+  "stock": $umb-on-ink,
+  "action": $umb-on-ink,
+  "state": $umb-ink,
+  "population": $umb-ink,
+  "agent": $umb-ink,
+);
+
+@each $name, $text in $node-header-text {
+  .react-flow__node-#{$name} .react-flow__node-base__content,
+  .react-flow__node-ghost__content.--type-#{$name} {
+    .react-flow__node-base__header {
+      color: $text;
+      .react-flow__node-base__icon svg {
+        fill: $text;
+      }
+    }
+  }
+}
+
 $node-radius: (
   "variable": 24px,
   "converter": 6px,

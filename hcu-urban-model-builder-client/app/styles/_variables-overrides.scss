@@ -300,15 +300,12 @@ $cyans: (
 // fusv-enable
 
 // UMB × UFC colors (see _tokens.scss)
-$color-fiord: #465166;
-$color-anakiwa: #a3c4ff;
-$color-rose: #ff0071;
 $node-selected-color: $umb-ink;
 $grey: $umb-paper-2;
 
 $color-primary: $umb-ink;
 $color-primary-light: $umb-accent-light;
-$color-secondary: $ufc-dull-blue;
+$color-secondary: $umb-text-2;
 $color-secondary-light: tint-color($color-secondary, 80%);
 
 // scss-docs-start theme-color-variables

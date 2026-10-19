@@ -1,31 +1,34 @@
-// Node colours are part of the model, not of the brand: keep these values
-// independent of $primary/$secondary.
+// Node ("primitive") colours from the Urban Futures Collective palette,
+// grouped by paradigm: system dynamics in blues, agent-based in warm
+// colours, common nodes in greens/navy, geodata in UFC dark blue. Each type
+// also has its own shape (see $node-radius in _ufc.scss), so types stay
+// distinguishable where two share a hue. Kept independent of
+// $primary/$secondary on purpose. Contrast notes: DESIGN.md.
 $node-color-map: (
-  "flow": #a3c4ff,
-  "stock": #465166,
-  "variable": #8093b3,
-  "population": #70c883,
-  "state": #fbe094,
-  "action": #584560,
-  "converter": #225f50,
-  "agent": #ffae33,
-  "folder": #686868,
-  "ogc-api-features": #c1a7cd,
-  "transition": #ffae33,
+  "stock": #536690, // UFC dull blue
+  "flow": #0873b2, // UFC light blue
+  "variable": #5da899, // UFC light green
+  "converter": #3b7981, // UFC dark teal
+  "ogc-api-features": #00649d, // UFC backdrop dark blue
+  "folder": #242b42, // UFC navy
+  "state": #e5ac23, // UFC yellow
+  "transition": #c1952d, // UFC gold
+  "action": #7b4b66, // UFC mauve
+  "population": #c36878, // UFC rose
+  "agent": #c1952d, // UFC gold (shared with transition, as before)
 );
 
-// Edges use darker variants of the light node colours so the lines stay
-// visible on white (>= 4.3:1).
+// Edges use the node colour itself; all but transition reach >= 3:1 on white.
 $edge-color-map: (
-  "flow": #3f72cf,
-  "transition": #a86600,
-  "agent-population": #2f8a45,
+  "flow": map.get($node-color-map, "flow"),
+  "transition": map.get($node-color-map, "transition"),
+  "agent-population": map.get($node-color-map, "population"),
 );
 
 $edge-color-selected-map: (
-  "flow": #2c56a3,
-  "transition": #7a4a00,
-  "agent-population": #1f6633,
+  "flow": #055a8c,
+  "transition": #8f6c1c,
+  "agent-population": #9a4a5a,
 );
 
 @function flatten-color($color, $alpha, $background: white) {

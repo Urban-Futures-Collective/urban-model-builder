@@ -10,9 +10,9 @@ properties); component styles in `app/styles/_ufc.scss`.
 - **Structure.** Library screens use a 64px left rail instead of a top navbar. The editor has no
   bar at all: a floating title block (top left), a run/share cluster (top right), the existing
   sidebar views (left), the node inspector (right) and a persistent node dock (bottom).
-- **The interface is neutral, colour belongs to the model.** Node colours are unchanged
-  (`$node-color-map` in `app/styles/lib/colors.scss`) and are the only saturated colour on the
-  canvas. Every node type also has its own shape (radius), so types stay readable without colour.
+- **The interface is neutral, colour belongs to the model.** Node colours are the only saturated
+  colour on the canvas. Every node type also has its own shape (radius, filled header, frame or
+  arrow), so types stay readable without colour and where two types share a hue.
 - **Library as a grid of model cards** with a state chip, version, node count and a node-mix bar,
   instead of a list group. A compact table view is kept for dense scanning.
 - **Selection = outline, not glow.** A 2px ink outline with 2px offset, the same as keyboard focus.
@@ -32,15 +32,39 @@ properties); component styles in `app/styles/_ufc.scss`.
 - **Square corners** on buttons, inputs, cards and panels (both systems agree); **pill badges** for
   metadata chips (UFC).
 - **Quiet shadow** (UFC `shadow-xs`, 1–2px soft) instead of UMB's hard offset shadow.
-- **Links** in UFC light blue `#0873b2`; secondary buttons in UFC dull blue `#536690`.
+- **Links** are underlined ink, as on the UFC site (`text-primary underline`).
 - **Endorsement.** The UFC pinwheel logo appears on the landing page, the login page and in the
   footer ("Urban Model Builder · Urban Futures Collective"). The product mark stays the UMB mark.
 
+## Node ("primitive") colours
+
+Since the rebrand the node colours come from the UFC palette, grouped by modelling paradigm
+(`$node-color-map` in `app/styles/lib/colors.scss`). Nine UFC hues serve eleven node types.
+
+| Node | Colour | UFC name | Form | Contrast |
+| --- | --- | --- | --- | --- |
+| Stock | `#536690` | dull blue | square, filled header | white text 5.7:1 |
+| Flow | `#0873b2` | light blue | arrow | line 5.1:1 on white |
+| Variable | `#5da899` | light green | pill outline | border 2.8:1 (label carries the meaning) |
+| Converter | `#3b7981` | dark teal | rounded outline | border 5.0:1 |
+| OGC API Features | `#00649d` | backdrop dark blue | rounded outline | border 6.3:1 |
+| Folder | `#242b42` | navy | frame | frame 14:1 |
+| State | `#e5ac23` | yellow | soft rounded, filled | ink text 8.3:1 |
+| Transition | `#c1952d` | gold | arrow | line 2.8:1, below 3:1 |
+| Action | `#7b4b66` | mauve | rounded, filled | white text 6.9:1 |
+| Population | `#c36878` | rose | square, filled | ink text 4.49:1, just below 4.5:1 |
+| Agent | `#c1952d` | gold | frame | shared with transition, as in the original UMB |
+
+Known weak spots: the transition line and the variable outline are below 3:1 against white, and
+text on population headers is 0.01 below AA. If that matters for your audience, darken those
+three by one step; the other eight pass.
+
 ## Deliberately not combined
 
-- **UFC wedge colours** (teal, rose, mauve, mid-blue…) are not used in UI chrome. Several sit close
-  to node colours (converter `#225f50`, action `#584560`, OGC `#c1a7cd`) and would make the
-  canvas ambiguous. They appear only as the landing hero backdrop (dark navy) and in the UFC logo.
+- **UFC wedge colours in UI chrome.** Teal, rose, mauve, gold and the blues are reserved for
+  nodes, so they never appear on buttons, links, panels or navigation. That keeps "colour = model"
+  intact. The one exception is the yellow accent, which is close to the state node colour; it is
+  used only as underline, marker and hover wash, never as a filled shape on the canvas.
 - **Yellow borders and yellow focus rings** (UFC default `--border`) are not used: yellow is also
   the colour of state and agent nodes. Borders are neutral hairlines (`#e4e2df`), focus is ink.
 - **UMB's mono plan labels** (IBM Plex Mono) are dropped in favour of Poppins upper-case labels.
