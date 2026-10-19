@@ -68,6 +68,9 @@ const DEFAULT_SIZE: Partial<Record<NodeType, [number, number]>> = {
   [NodeType.Transition]: [120, 8],
 };
 
+// Smallest canvas area (in canvas px) a thumbnail shows.
+const MIN_EXTENT: [number, number] = [900, 420];
+
 function typeClass(type: NodeType) {
   return dasherize(NodeType[type] ?? 'unknown');
 }
@@ -164,12 +167,16 @@ export default class ModelCardComponent extends Component<ModelCardSignature> {
       };
     });
 
-    const minX = Math.min(...boxes.map((b) => b.x));
-    const minY = Math.min(...boxes.map((b) => b.y));
-    const maxX = Math.max(...boxes.map((b) => b.x + b.w));
-    const maxY = Math.max(...boxes.map((b) => b.y + b.h));
-    const width = Math.max(maxX - minX, 1);
-    const height = Math.max(maxY - minY, 1);
+    // Fit the graph into the frame, but never zoom in beyond a minimum canvas
+    // extent: a model with a few nodes shows small nodes, centred.
+    const left = Math.min(...boxes.map((b) => b.x));
+    const top = Math.min(...boxes.map((b) => b.y));
+    const right = Math.max(...boxes.map((b) => b.x + b.w));
+    const bottom = Math.max(...boxes.map((b) => b.y + b.h));
+    const width = Math.max(right - left, MIN_EXTENT[0]);
+    const height = Math.max(bottom - top, MIN_EXTENT[1]);
+    const minX = left - (width - (right - left)) / 2;
+    const minY = top - (height - (bottom - top)) / 2;
 
     // Frames first so they sit behind their children.
     const frames = [NodeType.Folder, NodeType.Agent];

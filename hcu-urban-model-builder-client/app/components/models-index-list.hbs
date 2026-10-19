@@ -126,7 +126,8 @@
     </div>
   {{/if}}
 
-  {{#unless models.length}}
+  {{! With the "new model" tile visible the empty grid explains itself. }}
+  {{#if (and (not models.length) (not (and @showNewTile (eq @view "grid"))))}}
     <div class="library__empty">
       <p class="library__empty-title">{{t
           "routes.models.index.no_models_found"
@@ -135,5 +136,5 @@
         <p>{{t "library.empty_hint"}}</p>
       {{/if}}
     </div>
-  {{/unless}}
+  {{/if}}
 {{/let}}

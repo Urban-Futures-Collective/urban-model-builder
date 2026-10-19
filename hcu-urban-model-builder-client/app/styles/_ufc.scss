@@ -333,10 +333,12 @@ input:focus,
   color: $umb-ink;
   text-decoration: none;
   font-family: $umb-font-headings;
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+  text-align: center;
+  overflow-wrap: anywhere;
   transition: background-color $umb-transition;
 
   &:hover {

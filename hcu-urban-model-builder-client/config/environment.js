@@ -55,12 +55,22 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
-    // here you can enable a production-specific feature
-    ENV['ember-simple-auth-oidc'].host =
-      'https://auth.comodeling.city/realms/hcu-model-builder/protocol/openid-connect';
-    ENV['ember-simple-auth-oidc'].afterLogoutUri =
-      'https://modelbuilder.comodeling.city';
-    ENV.apiURL = 'https://modelbuilderapi.comodeling.city';
+    if (process.env.UMB_RUNTIME_CONFIG) {
+      // Container builds (deploy/frontend/Dockerfile): the values are
+      // placeholders that the container's entrypoint replaces in index.html
+      // from environment variables at start-up, so one image fits every
+      // deployment.
+      ENV['ember-simple-auth-oidc'].host = '__UMB_OIDC_HOST__';
+      ENV['ember-simple-auth-oidc'].clientId = '__UMB_OIDC_CLIENT_ID__';
+      ENV['ember-simple-auth-oidc'].afterLogoutUri = '__UMB_PUBLIC_URL__';
+      ENV.apiURL = '__UMB_API_URL__';
+    } else {
+      ENV['ember-simple-auth-oidc'].host =
+        'https://auth.comodeling.city/realms/hcu-model-builder/protocol/openid-connect';
+      ENV['ember-simple-auth-oidc'].afterLogoutUri =
+        'https://modelbuilder.comodeling.city';
+      ENV.apiURL = 'https://modelbuilderapi.comodeling.city';
+    }
   }
 
   return ENV;
