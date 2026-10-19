@@ -36,9 +36,14 @@ the container starts, so changing them only needs a restart, not a rebuild.
 
 ## 1. Prepare Keycloak
 
-In your Keycloak (any recent version; the theme was tested with 26.0):
+In your Keycloak (any recent version; the theme was tested with 26.0). For the UFC setup that is
+`https://auth.urbanfuturescollective.org` (`UMB_KEYCLOAK_URL`, without `/realms/...`):
 
-1. **Realm**: use an existing realm or create one, e.g. `urban-model-builder`.
+1. **Realm**: use an existing realm or create one, e.g. `urban-model-builder`, and set its name
+   as `UMB_KEYCLOAK_REALM`. Check: `https://auth.urbanfuturescollective.org/realms/<realm>/.well-known/openid-configuration`
+   must answer, and its `issuer` must equal `UMB_KEYCLOAK_URL/realms/UMB_KEYCLOAK_REALM` exactly
+   (the backend compares it). If Keycloak runs with a relative path such as `/auth`, include it in
+   `UMB_KEYCLOAK_URL`.
 2. **Client** (Clients → Create client):
    - Client ID: `urban-model-builder` (or set `UMB_KEYCLOAK_CLIENT_ID`)
    - Client authentication: **off** (public client), Standard flow: **on**
