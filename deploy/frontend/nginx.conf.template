@@ -1,0 +1,69 @@
+# Urban Model Builder – nginx for the client.
+# Serves the single-page app and proxies the backend endpoints, so the whole
+# tool runs under one domain. ${UMB_BACKEND_UPSTREAM} is filled in by the
+# nginx image's envsubst step at start-up.
+
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
+server {
+  listen 80;
+  server_name _;
+  root /usr/share/nginx/html;
+
+  client_max_body_size 50m;
+
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml;
+  gzip_min_length 1024;
+
+  location = /healthz {
+    access_log off;
+    default_type text/plain;
+    return 200 "ok\n";
+  }
+
+  # Real-time API used by the client (Feathers over Socket.IO)
+  location /socket.io/ {
+    proxy_pass ${UMB_BACKEND_UPSTREAM};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 1h;
+    proxy_send_timeout 1h;
+  }
+
+  # OGC API Processes for the Urban Model Platform, and the admin endpoints
+  location ~ ^/(ogcapi|admin)(/|$) {
+    proxy_pass ${UMB_BACKEND_UPSTREAM};
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 300s;
+  }
+
+  # Fingerprinted build output (name contains a content hash): cache for good
+  location ~* "^/assets/.+[.-][0-9a-f]{16,}\.(js|css|map)$" {
+    try_files $uri =404;
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+  }
+
+  # Other static files (images, fonts, videos) keep their names: revalidate
+  location /assets/ {
+    try_files $uri =404;
+    expires 1h;
+  }
+
+  # Everything else is a client-side route
+  location / {
+    try_files $uri /index.html;
+    add_header Cache-Control "no-cache";
+  }
+}

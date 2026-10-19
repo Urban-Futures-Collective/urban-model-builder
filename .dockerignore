@@ -1,4 +1,11 @@
 node_modules
+**/node_modules
 .env
 .git
 lib
+data
+**/dist
+**/tmp
+**/.embroider
+config/.env
+deploy/.env

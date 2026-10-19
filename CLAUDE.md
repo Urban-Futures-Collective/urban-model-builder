@@ -73,3 +73,5 @@ This runs `npm version` in the backend (its `postversion` compiles and packs int
 ## Deployment
 
 Run `./scripts/deploy.sh` on the server (staging compose files: `docker-compose-staging*.yml`; migrations via `Dockerfile.migrate` / `scripts/migrate.sh`).
+
+`deploy/` holds a self-contained production stack for Dokploy or any Docker host (`deploy/docker-compose.yml`: postgres, redis, migrate, backend, frontend; Keycloak is external). The frontend image (`deploy/frontend/`) builds the client with `UMB_RUNTIME_CONFIG=1`, which puts placeholders into the Ember config; its entrypoint fills them from `UMB_*` environment variables, and its nginx proxies `/socket.io/`, `/ogcapi`, `/admin` to the backend. The Keycloak login theme lives in `deploy/keycloak-theme/` (rebuild the JAR with `build-jar.sh`). See `deploy/README.md`.

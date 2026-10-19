@@ -1,0 +1,450 @@
+/*
+ * Urban Model Builder – Keycloak login theme
+ * UMB × Urban Futures Collective design: navy brand panel with the UMB mark,
+ * white form panel, Poppins / Satoshi, square controls, yellow accent.
+ * Child of keycloak.v2 (PatternFly 5); only CSS, no template overrides.
+ */
+
+@font-face {
+  font-display: swap;
+  font-family: "Poppins Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("../fonts/Poppins-Variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Satoshi Variable";
+  font-style: normal;
+  font-weight: 300 900;
+  src: url("../fonts/Satoshi-Variable.woff2") format("woff2");
+}
+
+/* Tokens. Declared for the dark-mode class too: the login keeps the brand's
+   light form panel in both colour schemes. */
+:root,
+.pf-v5-theme-dark {
+  --umb-ink: #141c32;
+  --umb-paper: #ffffff;
+  --umb-paper-2: #f6f5f4;
+  --umb-line: #e4e2df;
+  --umb-text-2: #4a5268;
+  --umb-meta: #5f667a;
+  --umb-accent: #e5ac23;
+  --umb-accent-light: rgba(229, 172, 35, 0.22);
+  --umb-danger: #c8102e;
+  --umb-font-headings: "Poppins Variable", "Poppins", "Avenir Next",
+    "Helvetica Neue", Arial, sans-serif;
+  --umb-font-body: "Satoshi Variable", "Satoshi", "Avenir Next", "Segoe UI",
+    Arial, sans-serif;
+
+  --pf-v5-global--FontFamily--text: var(--umb-font-body);
+  --pf-v5-global--FontFamily--heading: var(--umb-font-headings);
+  --pf-v5-global--FontFamily--redhatfont--text: var(--umb-font-body);
+  --pf-v5-global--FontFamily--redhatfont--heading: var(--umb-font-headings);
+  --pf-v5-global--primary-color--100: var(--umb-ink);
+  --pf-v5-global--primary-color--200: var(--umb-ink);
+  --pf-v5-global--link--Color: var(--umb-ink);
+  --pf-v5-global--link--Color--hover: var(--umb-ink);
+  --pf-v5-global--Color--100: var(--umb-ink);
+  --pf-v5-global--Color--200: var(--umb-text-2);
+  --pf-v5-global--BackgroundColor--100: var(--umb-paper);
+  --pf-v5-global--BackgroundColor--200: var(--umb-paper-2);
+  --pf-v5-global--BorderColor--100: var(--umb-line);
+  --pf-v5-global--BorderRadius--sm: 0;
+  --pf-v5-global--BorderRadius--lg: 0;
+  --pf-v5-global--danger-color--100: var(--umb-danger);
+  color-scheme: light;
+}
+
+html,
+body#keycloak-bg,
+.login-pf body {
+  height: auto;
+  min-height: 100%;
+  background: var(--umb-paper) !important;
+  color: var(--umb-ink);
+  font-family: var(--umb-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ */
+/* Layout: brand panel left, form right                                */
+/* ------------------------------------------------------------------ */
+
+.pf-v5-c-login {
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+  background: var(--umb-paper);
+}
+
+.pf-v5-c-login__container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 560px);
+  grid-template-areas: "header main";
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Brand panel */
+#kc-header.pf-v5-c-login__header {
+  grid-area: header;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 48px clamp(24px, 5vw, 80px);
+  overflow: hidden;
+  color: #ffffff;
+  background-color: var(--umb-ink);
+  background-image: url("../img/umb-mark-watermark.svg");
+  background-repeat: no-repeat;
+  background-position: right -80px bottom -120px;
+  background-size: min(46vw, 560px);
+}
+
+/* UMB mark */
+#kc-header::before {
+  content: "";
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  width: 48px;
+  height: 48px;
+  background: url("../img/umb-mark-white.svg") center / contain no-repeat;
+}
+
+/* Product name (realm display name / loginTitleHtml) */
+#kc-header-wrapper {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-family: var(--umb-font-headings);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02ch;
+  text-transform: none;
+  color: #ffffff;
+  white-space: normal;
+}
+
+#kc-header-wrapper * {
+  color: inherit;
+  font: inherit;
+  text-transform: none;
+  letter-spacing: inherit;
+}
+
+/* Tagline and UFC endorsement at the bottom of the brand panel */
+#kc-header::after {
+  content: "Co-model your city";
+  grid-column: 1 / -1;
+  grid-row: 2;
+  align-self: end;
+  display: block;
+  max-width: 12ch;
+  padding-bottom: 104px;
+  font-family: var(--umb-font-headings);
+  font-size: clamp(2.4rem, 2rem + 1.6vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02ch;
+  color: #ffffff;
+  background: url("../img/ufc-logo-white.svg") left bottom / auto 64px no-repeat;
+}
+
+html[lang^="de"] #kc-header::after {
+  content: "Co-Modelliere deine Stadt";
+}
+
+/* Form panel */
+.pf-v5-c-login__main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 48px clamp(24px, 4vw, 64px);
+  background: var(--umb-paper);
+  box-shadow: none;
+  color: var(--umb-ink);
+}
+
+.pf-v5-c-login__main-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 24px;
+}
+
+.pf-v5-c-login__main-header::before {
+  content: "Urban Model Builder";
+  flex: 1 0 100%;
+  order: -1;
+  font-family: var(--umb-font-headings);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--umb-meta);
+}
+
+#kc-page-title {
+  margin: 0;
+  font-family: var(--umb-font-headings);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02ch;
+  color: var(--umb-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--umb-accent);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 10px;
+  padding-bottom: 6px;
+}
+
+.pf-v5-c-login__main-body,
+.pf-v5-c-login__main-footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Controls                                                            */
+/* ------------------------------------------------------------------ */
+
+.pf-v5-c-form__label,
+.pf-v5-c-form__label-text {
+  font-family: var(--umb-font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--umb-ink);
+}
+
+.pf-v5-c-form-control {
+  --pf-v5-c-form-control--BackgroundColor: var(--umb-paper);
+  --pf-v5-c-form-control--Color: var(--umb-ink);
+  --pf-v5-c-form-control--before--BorderColor: var(--umb-ink);
+  --pf-v5-c-form-control--before--BorderStyle: solid;
+  --pf-v5-c-form-control--before--BorderWidth: 1px;
+  --pf-v5-c-form-control--after--BorderBottomColor: var(--umb-ink);
+  --pf-v5-c-form-control--hover--after--BorderBottomColor: var(--umb-ink);
+  --pf-v5-c-form-control--focus--after--BorderBottomColor: var(--umb-ink);
+  --pf-v5-c-form-control--focus--after--BorderBottomWidth: 2px;
+  border-radius: 0;
+  font-family: var(--umb-font-body);
+  min-height: 40px;
+}
+
+.pf-v5-c-form-control::before {
+  border: 1px solid var(--umb-ink) !important;
+  border-radius: 0;
+}
+
+.pf-v5-c-form-control::after {
+  border: 0 !important;
+  border-bottom: 1px solid var(--umb-ink) !important;
+  border-radius: 0;
+}
+
+.pf-v5-c-form-control:focus-within {
+  outline: 3px solid rgba(83, 102, 144, 0.35);
+  outline-offset: 0;
+}
+
+.pf-v5-c-form-control > :is(input, select, textarea) {
+  font-family: var(--umb-font-body);
+  font-size: 1rem;
+  color: var(--umb-ink);
+}
+
+.pf-v5-c-button {
+  border-radius: 0;
+  font-family: var(--umb-font-headings);
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  min-height: 44px;
+}
+
+.pf-v5-c-button::after {
+  border-radius: 0 !important;
+}
+
+.pf-v5-c-button.pf-m-primary {
+  --pf-v5-c-button--m-primary--BackgroundColor: var(--umb-ink);
+  --pf-v5-c-button--m-primary--Color: #ffffff;
+  --pf-v5-c-button--m-primary--hover--BackgroundColor: #2a3350;
+  --pf-v5-c-button--m-primary--hover--Color: #ffffff;
+  --pf-v5-c-button--m-primary--focus--BackgroundColor: #2a3350;
+  --pf-v5-c-button--m-primary--active--BackgroundColor: var(--umb-ink);
+  box-shadow: 0 1px 2px rgba(20, 28, 50, 0.08);
+}
+
+/* Secondary = UFC outline button: yellow border, yellow wash on hover */
+.pf-v5-c-button.pf-m-secondary {
+  --pf-v5-c-button--m-secondary--Color: var(--umb-ink);
+  --pf-v5-c-button--m-secondary--BackgroundColor: var(--umb-paper);
+  --pf-v5-c-button--m-secondary--after--BorderColor: var(--umb-accent);
+  --pf-v5-c-button--m-secondary--hover--Color: var(--umb-ink);
+  --pf-v5-c-button--m-secondary--hover--BackgroundColor: var(--umb-accent-light);
+  --pf-v5-c-button--m-secondary--hover--after--BorderColor: var(--umb-ink);
+  --pf-v5-c-button--m-secondary--after--BorderWidth: 2px;
+  --pf-v5-c-button--m-secondary--hover--after--BorderWidth: 2px;
+}
+
+.pf-v5-c-button.pf-m-control {
+  --pf-v5-c-button--m-control--after--BorderBottomColor: var(--umb-ink);
+  --pf-v5-c-button--m-control--after--BorderTopColor: var(--umb-ink);
+  --pf-v5-c-button--m-control--after--BorderRightColor: var(--umb-ink);
+  --pf-v5-c-button--m-control--after--BorderLeftColor: var(--umb-ink);
+  border-radius: 0;
+}
+
+.pf-v5-c-button.pf-m-link,
+.pf-v5-c-login a,
+#kc-info a,
+#kc-registration a {
+  color: var(--umb-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--umb-font-body);
+  font-weight: 600;
+}
+
+.pf-v5-c-login a:hover,
+#kc-info a:hover {
+  text-decoration-color: var(--umb-accent);
+  text-decoration-thickness: 2px;
+}
+
+.pf-v5-c-check__input {
+  accent-color: var(--umb-ink);
+}
+
+.pf-v5-c-check__label {
+  color: var(--umb-ink);
+}
+
+/* Empty social-provider footer: no extra divider */
+.pf-v5-c-login__main-footer {
+  border: 0;
+  padding: 0;
+}
+
+/* Info band ("New user? Register") */
+#kc-info {
+  margin-top: 24px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--umb-line);
+  background: transparent;
+  color: var(--umb-text-2);
+  text-align: left;
+}
+
+#kc-info .pf-v5-c-login__main-footer-band {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.pf-v5-c-login__main-footer-band-item {
+  padding: 0;
+}
+
+/* Alerts */
+.pf-v5-c-alert {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--umb-line);
+  border-left-width: 1px;
+  font-family: var(--umb-font-body);
+}
+
+.pf-v5-c-alert.pf-m-danger {
+  border-color: var(--umb-danger);
+}
+
+.pf-v5-c-helper-text__item.pf-m-error,
+.kc-feedback-text {
+  color: var(--umb-danger);
+}
+
+/* Language select */
+.pf-v5-c-login__main-header-utilities .pf-v5-c-form-control {
+  min-height: 32px;
+  width: auto;
+}
+
+/* Social login buttons */
+.pf-v5-c-login__main-footer-links-item-link {
+  border: 1px solid var(--umb-ink);
+  border-radius: 0;
+  color: var(--umb-ink);
+}
+
+/* ------------------------------------------------------------------ */
+/* Small screens: brand panel becomes a band above the form            */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .pf-v5-c-login__container {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "header"
+      "main";
+  }
+
+  #kc-header.pf-v5-c-login__header {
+    min-height: 0;
+    row-gap: 20px;
+    padding: 24px 20px 28px;
+    background-size: 220px;
+    background-position: right -40px bottom -60px;
+  }
+
+  #kc-header::before {
+    width: 36px;
+    height: 36px;
+  }
+
+  #kc-header::after {
+    font-size: 1.75rem;
+    max-width: none;
+    padding-bottom: 56px;
+    background-size: auto 40px;
+  }
+
+  .pf-v5-c-login__main {
+    min-height: 0;
+    padding: 28px 20px 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

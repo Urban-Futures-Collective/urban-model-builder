@@ -1,0 +1,117 @@
+# Urban Model Builder – production stack for Dokploy (or any Docker host).
+#
+# Services: postgres, redis, migrate (one-shot), backend, frontend.
+# Keycloak is NOT part of this stack: point UMB_KEYCLOAK_URL/REALM at your
+# existing Keycloak. Only the frontend needs a public domain; it serves the
+# app and proxies the backend (Socket.IO, OGC API, admin) on the same domain.
+#
+# Configuration comes from environment variables (Dokploy: Environment tab;
+# elsewhere: deploy/.env, see deploy/.env.example). See deploy/README.md.
+
+name: urban-model-builder
+
+x-database-url: &database-url "postgresql://${POSTGRES_USER:-umb}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-urban_model_builder}"
+
+services:
+  postgres:
+    image: postgres:16.3
+    restart: unless-stopped
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-umb}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-urban_model_builder}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Applies database migrations, then exits. The backend waits for it.
+  migrate:
+    build:
+      context: ..
+      dockerfile: Dockerfile.migrate
+    restart: "no"
+    environment:
+      DATABASE_URL: *database-url
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3030"
+      DATABASE_URL: *database-url
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      FEATHERS_SECRET: ${FEATHERS_SECRET:?set FEATHERS_SECRET}
+      OIDC_ISSUER: ${UMB_KEYCLOAK_URL:?set UMB_KEYCLOAK_URL}/realms/${UMB_KEYCLOAK_REALM:?set UMB_KEYCLOAK_REALM}
+      # bcrypt hash of the admin token (npm run hash-password <token>);
+      # needed only for the admin/* endpoints (UMP approval)
+      ADMIN_TOKEN: ${ADMIN_TOKEN_HASH:-}
+      # Settings without a dedicated variable, as JSON (node-config):
+      # origins = allowed CORS origins for Socket.IO,
+      # audience = the "aud" the backend requires in Keycloak access tokens.
+      NODE_CONFIG: '{"origins":["${UMB_PUBLIC_URL:?set UMB_PUBLIC_URL}"],"authentication":{"oidc":{"audience":["${UMB_KEYCLOAK_AUDIENCE:-account}"]}}}'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').connect(3030,'127.0.0.1').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend/Dockerfile
+    restart: unless-stopped
+    environment:
+      UMB_PUBLIC_URL: ${UMB_PUBLIC_URL:?set UMB_PUBLIC_URL}
+      UMB_API_URL: ${UMB_API_URL:-}
+      UMB_KEYCLOAK_URL: ${UMB_KEYCLOAK_URL:?set UMB_KEYCLOAK_URL}
+      UMB_KEYCLOAK_REALM: ${UMB_KEYCLOAK_REALM:?set UMB_KEYCLOAK_REALM}
+      UMB_KEYCLOAK_CLIENT_ID: ${UMB_KEYCLOAK_CLIENT_ID:-urban-model-builder}
+      UMB_BACKEND_UPSTREAM: http://backend:3030
+    depends_on:
+      backend:
+        condition: service_healthy
+    # Dokploy routes the domain to this port (Domains tab: service
+    # "frontend", port 80). For a plain Docker host, publish it instead:
+    # ports: ["8080:80"]
+    expose:
+      - "80"
+
+volumes:
+  postgres-data:
+  redis-data:
