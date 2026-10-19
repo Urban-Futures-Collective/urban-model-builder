@@ -1,53 +1,17 @@
 {{#unless @disabled}}
-  <BasicDropdown
-    @horizontalPosition="center"
-    @verticalPosition="above"
-    @onOpen={{this.onOpen}}
-    @onClose={{this.onClose}}
-    @renderInPlace={{true}}
-    @registerAPI={{fn
-      this.floatingToolbarDropdownManager.registerInstance
-      "primitivesModal"
-    }}
-    as |dd|
-  >
-
-    <dd.Trigger {{on "click" (fn this.removePinOnClose dd)}}>
-      <BsButton @type="primary" class="btn-round" @size="md">
-        <SvgIcon @icon="add" @size="md" />
-      </BsButton>
-    </dd.Trigger>
-    <dd.Content>
-      <div class="primitives-card">
-        <div class="primitives-card__row">
-          <h5>
-            {{t "node-toolbar.title"}}
-          </h5>
-          <a
-            class={{if
-              this.floatingToolbarDropdownManager.isPrimitivesDropdownPinned
-              "pinned"
-            }}
-            href="javascript:void(0)"
-            {{on "click" this.toggleDropdown}}
-          >
-            <SvgIcon @icon="push_pin" @size="xs" />
-          </a>
-        </div>
-        {{#each this.nodeGroups as |nodeGroup|}}
-          <h6>
-            {{titleize nodeGroup.name}}
-          </h6>
-          <div class="node-toolbar__section">
-            {{#each nodeGroup.nodeTypes as |nodeType|}}
-              <FloatingToolbar::Node
-                @config={{this.getNodeTypeConfig nodeType}}
-                @onClick={{this.onNodeClick}}
-              />
-            {{/each}}
-          </div>
+  <div class="node-dock__groups" role="toolbar" aria-label={{t "editor.add_node"}}>
+    {{#each this.nodeGroups as |nodeGroup|}}
+      <div class="node-dock__group">
+        <span class="node-dock__label">
+          {{t (concat "editor.dock_groups." nodeGroup.name)}}
+        </span>
+        {{#each nodeGroup.nodeTypes as |nodeType|}}
+          <FloatingToolbar::Node
+            @config={{this.getNodeTypeConfig nodeType}}
+            @onClick={{this.onNodeClick}}
+          />
         {{/each}}
       </div>
-    </dd.Content>
-  </BasicDropdown>
+    {{/each}}
+  </div>
 {{/unless}}

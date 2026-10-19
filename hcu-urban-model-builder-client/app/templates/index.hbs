@@ -1,240 +1,210 @@
 {{page-title (t "routes.index.title")}}
 
+<div class="landing">
+  <header class="landing__bar">
+    <LinkTo @route="index" class="landing__brand">
+      <img src="/assets/images/umb-mark.svg" alt="" width="28" height="28" />
+      {{t "general.brand"}}
+    </LinkTo>
+    <nav class="landing__nav" aria-label={{t "shell.rail_label"}}>
+      <a
+        href="https://citysciencelab.github.io/urban-model-builder/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-ghost btn-sm"
+      >
+        {{t "shell.docs"}}
+      </a>
+      <LinkTo @route="demo" class="btn btn-ghost btn-sm">
+        {{t "general.demo"}}
+      </LinkTo>
+      <LinkTo @route="models" class="btn btn-primary btn-sm">
+        {{t "landingpage.get_started"}}
+      </LinkTo>
+    </nav>
+  </header>
 
-
-<div class="main-home overflow-hidden" style="background-color: #465166;">
-
-    <div class="position-absolute bottom-0 end-0 p-1 z-0 w-30 opacity-25">
-        <img src="/assets/images/comodeling_illustration.png" alt="Illustration of Comodeling"
-            style="max-width: 500px;">
-
-    </div>
-
-    <div class="hero-section text-center py-5 position-relative z-5">
-
-        <h1 class="display-3 text-white mb-4 w-75 fw-bold">
-            {{t "landingpage.title"}}
-        </h1>
-
-        <p class="lead text-white mb-5 w-75 fw-normal">
-            {{t "landingpage.subtitle"}}
-        </p>
-
-        <div class="grid">
-            <LinkTo @route="demo" class="btn btn-primary btn-lg text-wrap m-2">
-                <FaIcon @icon="laptop-code" />
-                {{t "landingpage.demo"}}
-            </LinkTo>
-
-            <LinkTo @route="models" class="btn btn-primary btn-lg text-wrap m-2">
-                <FaIcon @icon="circle-play" />
-                {{t "landingpage.get_started"}}
-            </LinkTo>
-
-            <a href="https://citysciencelab.github.io/urban-model-builder/" target="_blank"
-                class="btn btn-primary btn-lg text-wrap m-2">
-                <FaIcon @icon="book" />
-                {{t "landingpage.learn_more"}}
-            </a>
-        </div>
-
-    </div>
-
-
-
-
-
-</div>
-
-<div class="container landingpage main-content">
-
-    <div class="row my-5">
-        <div class="col-12 col-lg-6">
-            <div class="rounded overflow-hidden bg-white px-2 align-items-center justify-content-center">
-          <video autoplay muted loop style="width: 100%; border-radius: 1rem;">
-              <source src="/assets/videos/720p_modelbuilder_2.mp4" type="video/mp4">
-              {{t "landingpage.video_not_supported"}}
-          </video>
-          <p class="text-center mt-2 text-muted" style="font-size: 0.875rem; color:#434343;">
-              {{{t "landingpage.video_credits"}}}
-          </p>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="card ">
-                <div class="card-header">
-                    <h2 class="h3">
-                        {{t "landingpage.feature1.title"}}
-                    </h2>
-                </div>
-                <div class="card-body">
-                    {{t "landingpage.feature1.description"}}
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row my-5">
-        <div class="col-md-4 col-sm-12">
-            <div class="card ">
-                <div class="card-header">
-                    <h2 class="h3">
-                        {{t "landingpage.feature2.title"}}
-                    </h2>
-                </div>
-                <div class="card-body">
-                    {{t "landingpage.feature2.description"}}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-12">
-            <div class=" overflow-hidden bg-white px-2 h-100  align-items-center justify-content-center">
-                <video controls autoplay loop muted style="width: 100%;">
-                    <source src="/assets/videos/SD.mp4" type="video/mp4">
-                    {{t "landingpage.video_not_supported"}}
-                </video>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-12">
-            <div class=" overflow-hidden bg-white px-2 h-100 d-flex align-items-center justify-content-center">
-                <video controls autoplay muted style="width: 100%;">
-                    <source src="/assets/videos/ABM.mp4" type="video/mp4">
-                    {{t "landingpage.video_not_supported"}}
-                </video>
-            </div>
-        </div>
-    </div>
-
-    <div class="row my-5">
-        <div class="col-md-6 col-sm-12">
-            <div class="overflow-hidden bg-white px-2 h-100 d-flex align-items-center justify-content-center">
-                <video controls autoplay loop muted style="width: 100%;">
-                    <source src="/assets/videos/API Features.mp4" type="video/mp4">
-                    {{t "landingpage.video_not_supported"}}
-                </video>
-            </div>
-        </div>
-        <div class="col-md-6 col-sm-12">
-            <div class="card ">
-                <div class="card-header">
-                    <h2 class="h3">
-                        {{t "landingpage.feature3.title"}}
-                    </h2>
-                </div>
-                <div class="card-body">
-                    {{t "landingpage.feature3.description"}}
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div class="main-home" style="background-color: #a3c4ff; min-height: auto;">
-
-    <div class="container text-center py-5 landingpage">
-        <h2 class="display-4 mb-4 fw-bold" style="color: #465166;">
-            {{t "landingpage.comodeling"}}
-        </h2>
-        <p class="lead mb-5 w-75 mx-auto">
-            {{t "landingpage.comodeling_description"}}
-        </p>
-
-        <div class="mb-4 mx-auto">
-            <iframe class="w-75 rounded" height="420"
-                src="https://www.youtube.com/embed/p3ftnO9M6CE?si=VzJVycmyUuTgGxkA" title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-
-
-        <LinkTo @route="models" class="btn btn-secondary btn-lg">
-            <FaIcon @icon="circle-play" />
-            {{t "landingpage.get_started"}}
+  <section class="landing__hero">
+    <img
+      class="landing__mark"
+      src="/assets/images/umb-mark-white.svg"
+      alt=""
+      aria-hidden="true"
+    />
+    <div class="landing__hero-inner">
+      <span class="umb-eyebrow landing__eyebrow">
+        {{t "landingpage.eyebrow"}}
+      </span>
+      <h1 class="landing__title">{{t "landingpage.title"}}</h1>
+      <p class="landing__lead">{{t "landingpage.description"}}</p>
+      <p class="landing__lead">{{t "landingpage.subtitle"}}</p>
+      <div class="landing__actions">
+        <LinkTo @route="models" class="btn btn-primary btn-lg">
+          {{t "landingpage.get_started"}}
         </LinkTo>
-
-        <LinkTo @route="demo" class="btn btn-secondary btn-lg text-wrap m-2">
-            <FaIcon @icon="laptop-code" />
-            {{t "landingpage.demo"}}
+        <LinkTo @route="demo" class="btn btn-secondary btn-lg">
+          {{t "landingpage.demo"}}
         </LinkTo>
-
+        <a
+          href="https://citysciencelab.github.io/urban-model-builder/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-secondary btn-lg"
+        >
+          {{t "landingpage.learn_more"}}
+        </a>
+      </div>
     </div>
+  </section>
 
-
-</div>
-
-<div class="container landingpage main-content">
-    <div class="row my-5">
-        <h2 class="display-4 mb-4 fw-bold" style="color: #465166;">
-            {{t "landingpage.oss"}}
-        </h2>
-        <p class="lead mb-5 w-75 mx-auto">
-            {{{t "landingpage.oss_description"}}}
-        </p>
+  <section class="landing__section">
+    <div class="landing__grid">
+      <div>
+        <video class="landing__video" autoplay muted loop playsinline>
+          <source
+            src="/assets/videos/720p_modelbuilder_2.mp4"
+            type="video/mp4"
+          />
+          {{t "landingpage.video_not_supported"}}
+        </video>
+        {{! template-lint-disable no-triple-curlies }}
+        <p class="landing__credits">{{{t "landingpage.video_credits"}}}</p>
+      </div>
+      <div class="landing__feature">
+        <h2 class="h3">{{t "landingpage.feature1.title"}}</h2>
+        <p>{{t "landingpage.feature1.description"}}</p>
+      </div>
     </div>
-</div>
+  </section>
 
+  <section class="landing__section">
+    <div class="landing__grid">
+      <div class="landing__feature">
+        <h2 class="h3">{{t "landingpage.feature2.title"}}</h2>
+        <p>{{t "landingpage.feature2.description"}}</p>
+      </div>
+      <video class="landing__video" controls autoplay loop muted playsinline>
+        <source src="/assets/videos/SD.mp4" type="video/mp4" />
+        {{t "landingpage.video_not_supported"}}
+      </video>
+      <video class="landing__video" controls autoplay muted playsinline>
+        <source src="/assets/videos/ABM.mp4" type="video/mp4" />
+        {{t "landingpage.video_not_supported"}}
+      </video>
+    </div>
+  </section>
 
-<footer class="footer text-white mt-5 py-4 " style="background-color: #465166;">
-    <div class="container landingpage">
-        <div class="row text-center text-md-start">
-            <div class="col-md-4 mb-3 mb-md-0 ">
-                <h5>{{t "landingpage.footer.links_title"}}</h5>
-                <ul class="list-unstyled mt-2">
-                    <li>
-                        <LinkTo @route="datenschutz" class="text-white text-decoration-none">{{t
-                            "landingpage.footer.link_privacy"}}</LinkTo>
-                    </li>
-                    <li>
-                        <LinkTo @route="impressum" class="text-white text-decoration-none">{{t
-                            "landingpage.footer.link_imprint"}}</LinkTo>
-                    </li>
-                    <li>
-                        <LinkTo @route="nutzungsbedingungen" class="text-white text-decoration-none">{{t
-                            "landingpage.footer.link_terms"}}</LinkTo>
-                    </li>
-                </ul>
-                <ul class="list-unstyled mt-2">
-                    <li>
-                        <a href="https://connectedurbantwins.de" target="_blank" rel="noopener noreferrer"
-                            class="text-white text-decoration-none">
-                            Connected Urban Twins
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://citysciencelab.hamburg" target="_blank" rel="noopener noreferrer"
-                            class="text-white text-decoration-none">
-                            City Science Lab Hamburg
-                        </a>
-                    </li>
+  <section class="landing__section">
+    <div class="landing__grid">
+      <video class="landing__video" controls autoplay loop muted playsinline>
+        <source src="/assets/videos/API Features.mp4" type="video/mp4" />
+        {{t "landingpage.video_not_supported"}}
+      </video>
+      <div class="landing__feature">
+        <h2 class="h3">{{t "landingpage.feature3.title"}}</h2>
+        <p>{{t "landingpage.feature3.description"}}</p>
+      </div>
+    </div>
+  </section>
 
-                </ul>
-            </div>
-            <div class="col-md-4 mb-3 mb-md-0">
-                <h5>{{t "landingpage.footer.about_title"}}</h5>
-                <p class="mt-2 text-start">
-                    <img src="/assets/images/CUT_Logo_white.svg" alt="Connected Urban Twins Logo"
-                        class="img-fluid text-start" style="max-height: 120px; float: left;">
-                </p>
-                <p class="text-start">
-                    {{t "landingpage.footer.about_text"}}
-                </p>
-                <p class="mt-2 text-start">
-                    <img src="/assets/images/CSL_Logo_weis.png" alt="City Science Lab Logo"
-                        class="img-fluid text-start mt-2" style="max-width: 250px; float: left;">
-                </p>
+  <section class="landing__section landing__section--grey">
+    <div>
+      <h2 class="landing__section-title">{{t "landingpage.comodeling"}}</h2>
+      <p class="landing__prose">{{t "landingpage.comodeling_description"}}</p>
+      <iframe
+        class="landing__embed"
+        src="https://www.youtube.com/embed/p3ftnO9M6CE?si=VzJVycmyUuTgGxkA"
+        title={{t "landingpage.video_title"}}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+      <div class="landing__actions mt-4">
+        <LinkTo @route="models" class="btn btn-primary btn-lg">
+          {{t "landingpage.get_started"}}
+        </LinkTo>
+        <LinkTo @route="demo" class="btn btn-secondary btn-lg">
+          {{t "landingpage.demo"}}
+        </LinkTo>
+      </div>
+    </div>
+  </section>
 
-            </div>
+  <section class="landing__section">
+    <h2 class="landing__section-title">{{t "landingpage.oss"}}</h2>
+    {{! template-lint-disable no-triple-curlies }}
+    <p class="landing__prose">{{{t "landingpage.oss_description"}}}</p>
+  </section>
 
-            <div class="col-md-4">
-                <h5>{{t "landingpage.footer.funded_by"}}</h5>
-                <p class="bg-white p-1 rounded mt-2">
-                    <img src="/assets/images/CUT_Funders.svg" alt="Funded By" class="img-fluid mt-2"
-                        style="max-height: 150px;">
-                </p>
-            </div>
+  <footer class="landing__footer">
+    <div class="landing__footer-grid">
+      <div class="d-flex flex-column gap-3">
+        <img
+          class="landing__ufc-logo"
+          src="/assets/images/ufc-logo-white.svg"
+          alt={{t "landingpage.footer.ufc_name"}}
+        />
+        <p class="mb-0">{{t "landingpage.footer.ufc_text"}}</p>
+      </div>
+
+      <div>
+        <h2>{{t "landingpage.footer.links_title"}}</h2>
+        <ul>
+          <li>
+            <LinkTo @route="datenschutz">{{t
+                "landingpage.footer.link_privacy"
+              }}</LinkTo>
+          </li>
+          <li>
+            <LinkTo @route="impressum">{{t
+                "landingpage.footer.link_imprint"
+              }}</LinkTo>
+          </li>
+          <li>
+            <LinkTo @route="nutzungsbedingungen">{{t
+                "landingpage.footer.link_terms"
+              }}</LinkTo>
+          </li>
+          <li>
+            <a
+              href="https://connectedurbantwins.de"
+              target="_blank"
+              rel="noopener noreferrer"
+            >{{t "landingpage.footer.cut"}}</a>
+          </li>
+          <li>
+            <a
+              href="https://citysciencelab.hamburg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >{{t "landingpage.footer.csl"}}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="d-flex flex-column gap-3">
+        <h2 class="mb-0">{{t "landingpage.footer.about_title"}}</h2>
+        <div class="landing__footer-logos">
+          <img
+            src="/assets/images/CUT_Logo_white.svg"
+            alt={{t "landingpage.footer.cut"}}
+          />
+          <img
+            src="/assets/images/CSL_Logo_weis.png"
+            alt={{t "landingpage.footer.csl"}}
+          />
         </div>
+      </div>
+
+      <div class="d-flex flex-column gap-3">
+        <h2 class="mb-0">{{t "landingpage.footer.funded_by"}}</h2>
+        <div class="landing__funders">
+          <img
+            src="/assets/images/CUT_Funders.svg"
+            alt={{t "landingpage.footer.funded_by"}}
+          />
+        </div>
+      </div>
     </div>
-</footer>
+  </footer>
+</div>

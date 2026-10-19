@@ -1,14 +1,14 @@
-<a
-  class="node-toolbar__node --{{@config.className}}"
-  href="javascript:void(0)"
+<button
+  type="button"
+  class="node-dock__item node-dock__item--{{@config.className}}"
+  title={{t
+    "editor.add_node_of_type"
+    type=(t (concat "editor.node_types." @config.className))
+  }}
   {{on "click" (fn @onClick @config)}}
 >
-  <div class="node-toolbar__node__icon">
-    <SvgIcon @icon="add" @size="xs" />
-  </div>
-  <span>
-    <SvgIcon @icon={{@config.icon}} @size="md" />
-
-    {{uppercase (humanize @config.label)}}
-  </span>
-</a>
+  <span class="node-dock__swatch" aria-hidden="true"></span>
+  <span class="node-dock__name">{{t
+      (concat "editor.node_types." @config.className)
+    }}</span>
+</button>

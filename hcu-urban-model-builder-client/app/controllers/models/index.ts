@@ -12,6 +12,18 @@ import IntlService from 'ember-intl/services/intl';
 import { isEmpty } from '@ember/utils';
 import type UserService from 'hcu-urban-model-builder-client/services/user';
 
+const VIEW_STORAGE_KEY = 'umb-library-view';
+
+function readStoredView(): 'grid' | 'table' {
+  try {
+    return localStorage.getItem(VIEW_STORAGE_KEY) === 'table'
+      ? 'table'
+      : 'grid';
+  } catch {
+    return 'grid';
+  }
+}
+
 export default class ModelsIndexController extends Controller<ModelModel[]> {
   @service declare store: Store;
   @service intl!: IntlService;
@@ -20,12 +32,13 @@ export default class ModelsIndexController extends Controller<ModelModel[]> {
   @tracked isModalOpen = false;
   @tracked changeset!: EmberChangeset;
   @tracked mode = '';
-  @tracked sort_key = 'createdAt';
+  @tracked sort_key = 'updatedAt';
   @tracked sort_direction: number = -1;
   @tracked page = 1;
   @tracked limit = 10;
   @tracked q = '';
   @tracked _q = '';
+  @tracked view: 'grid' | 'table' = readStoredView();
 
   queryParams = ['sort_key', 'sort_direction', 'page', 'limit', 'q'];
 
@@ -39,6 +52,23 @@ export default class ModelsIndexController extends Controller<ModelModel[]> {
 
   get hasSearchQuery() {
     return !isEmpty(this.q);
+  }
+
+  get total(): number {
+    const meta = (this.model as unknown as { meta?: { total?: number } }).meta;
+    return meta?.total ?? this.persistedModels.length;
+  }
+
+  // The first card on the first page of "My models" is shown large, as the
+  // model to continue with, when the list is sorted by recency.
+  get featureFirst() {
+    return (
+      this.view === 'grid' &&
+      this.page === 1 &&
+      !this.hasSearchQuery &&
+      this.sort_key === 'updatedAt' &&
+      this.sort_direction === -1
+    );
   }
 
   @action
@@ -130,6 +160,10 @@ export default class ModelsIndexController extends Controller<ModelModel[]> {
     this.q = this._q;
   }
 
+  @action onSearchInput(event: Event) {
+    this._q = (event.target as HTMLInputElement).value;
+  }
+
   @action onShowSearch() {
     this._q = this.q;
     next(() => {
@@ -139,9 +173,17 @@ export default class ModelsIndexController extends Controller<ModelModel[]> {
     });
   }
 
-  @action clearSearch(dd: any) {
-    dd.closeDropdown();
+  @action clearSearch() {
     this._q = '';
     this.onSearchChange();
+  }
+
+  @action onViewChange(view: 'grid' | 'table') {
+    this.view = view;
+    try {
+      localStorage.setItem(VIEW_STORAGE_KEY, view);
+    } catch {
+      // storage unavailable: keep the choice for this session only
+    }
   }
 }

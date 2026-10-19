@@ -15,6 +15,8 @@ general:
   terms_of_service: Terms of Service
 
 landingpage:
+  eyebrow: Urban Futures Collective
+  video_title: Co-modeling with the Urban Model Builder (YouTube)
   title: Co-Model your City
   subtitle: Open Source · Free · Collaborative
   description: The Urban Model Builder is an open-source web application that allows you to create and simulate complex urban models.
@@ -37,6 +39,10 @@ landingpage:
   oss: Open Source & Open Standards
   oss_description: The Urban Model Builder is an open-source project based on open standards. As a simulation engine, it relies on the JavaScript open-source library <a href="https://github.com/scottfr/simulation" target="_blank">simulation</a>, which originates from the <a href="https://insightmaker.com" target="_blank">Insight Maker</a> project. To integrate data directly from the Urban Data Platform Hamburg, it uses the open OGC API - Features interface. For sharing models with other applications, the Urban Model Builder implements the OGC API - Processes standard. As part of the <a href="https://connectedurbantwins.de" target="_blank">Connected Urban Twins</a> project, it was developed as Digital Public Infrastructure (DPI) to create an open and accessible platform for modeling urban systems. Both the frontend and backend are licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.de.html" target="_blank">GPL-3.0 license</a>. This means that the source code is freely available and can be used, modified, and distributed by anyone.
   footer:
+    ufc_name: Urban Futures Collective
+    ufc_text: The Urban Model Builder is maintained by the Urban Futures Collective, building just urban futures through research and collaboration.
+    cut: Connected Urban Twins
+    csl: City Science Lab Hamburg
     about_title: Developed as part of
     about_text: at the
     links_title: Links
@@ -374,3 +380,74 @@ time_units:
 error:
   404_title: "Page Not Found"
   404_message: "Sorry, the page you are looking for does not exist."
+
+shell:
+  rail_label: Main navigation
+  home: Urban Model Builder home
+  models: Models
+  public: Public
+  docs: Docs
+  login: Log in
+  language: Switch language
+  account: Account
+
+login:
+  intro: Log in to build, share and simulate models with others. New here? Create a free account.
+
+editor:
+  back_home: Back to the home page
+  back_to_library: Back to my models
+  demo_model: Demo model
+  add_node: Add node
+  add_node_of_type: Add {type}
+  run: Run simulation
+  settings: Model settings
+  dock_groups:
+    common: Common
+    system-dynamics: SD
+    agent-based-modelling: ABM
+  node_types:
+    stock: Stock
+    flow: Flow
+    variable: Variable
+    converter: Converter
+    ogc-api-features: OGC API
+    folder: Folder
+    state: State
+    transition: Transition
+    action: Action
+    population: Population
+    agent: Agent
+
+library:
+  eyebrow: "Library · {count, plural, =0 {no models} =1 {1 model} other {# models}}"
+  collections: Collections
+  tab_mine: My models
+  tab_public: Public models
+  public_intro: Published models from everyone using the Urban Model Builder. Open one to explore it, or clone it to build on it.
+  search_label: Search models
+  search_placeholder: Search by model name
+  clear_search: Clear search
+  view: View
+  grid_view: Grid view
+  table_view: Table view
+  continue: Continue
+  start: Start
+  new_hint: Start from an empty canvas.
+  empty_hint: Create your first model to start building.
+  more_actions: More actions
+  edit_details: Edit details
+  nodes: "{count, plural, =0 {no nodes} =1 {1 node} other {# nodes}}"
+  node_mix_label: "Node types of this model ({count, plural, =1 {1 node} other {# nodes}})"
+  paradigm:
+    sd: "SD {percent} %"
+    abm: "ABM {percent} %"
+    geo: "Geo {percent} %"
+  columns:
+    name: Name
+    state: State
+    version: Version
+    role: Role
+    author: Author
+    edited: Edited
+    actions: Actions

@@ -1,6 +1,7 @@
 @use "sass:map";
 
 @import "node_modules/bootstrap/scss/functions";
+@import "./tokens";
 @import "./variables-overrides";
 @import "node_modules/bootstrap/scss/variables-dark";
 
@@ -24,7 +25,6 @@
 @import "node_modules/bootstrap/scss/dropdown";
 @import "node_modules/bootstrap/scss/button-group";
 @import "node_modules/bootstrap/scss/nav";
-@import "node_modules/bootstrap/scss/navbar";
 @import "node_modules/bootstrap/scss/card";
 @import "node_modules/bootstrap/scss/accordion";
 // @import "node_modules/bootstrap/scss/breadcrumb";
@@ -66,20 +66,12 @@
 @import "lib/dropdown";
 @import "lib/input";
 
-@import "./header";
-@import "./breadcrumbs";
-
-// start - switch-off responsive design
+// The editor is a desktop tool: keep the canvas from collapsing on small
+// screens. Library and landing pages are fluid.
 $force-width: 1200px;
-.container {
-  width: $force-width !important;
-  max-width: $force-width !important;
-}
-//.navbar,
 .react-wrapper {
   min-width: $force-width !important;
 }
-// end - switch-off responsive design
 
 .landingpage {
   width: 100% !important;
@@ -108,15 +100,6 @@ $force-width: 1200px;
     border-color: rgb(162.5, 168, 178.5);
     outline: 0;
     box-shadow: 0 0 0 0.25rem rgba(163, 196, 255, 0.25);
-  }
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: get-spacer(2);
-  img {
-    height: get-spacer(4);
   }
 }
 
@@ -171,27 +154,12 @@ main {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  height: calc(100vh - 72px);
-}
-
-.hero-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 72px);
-  padding: get-spacer(3);
+  height: 100vh;
 }
 
 .main-content {
   margin-top: get-spacer(3);
   display: grid;
-}
-
-.main-home {
-  display: grid;
-  min-height: calc(100vh - 72px);
-  overscroll-behavior: auto;
 }
 
 .content-page {
@@ -203,72 +171,6 @@ main {
   position: relative;
   height: 100%;
 }
-#navbar-main {
-  width: 100% !important;
-  min-width: none !important;
-  .nav-link.active {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 8px;
-  }
-}
-.navbar h4 {
-  color: $white;
-  margin: 0;
-}
-
-.navbar__back {
-  color: $white;
-}
-
-.toolbar__container {
-  display: flex;
-  align-items: center;
-  gap: get-spacer(3);
-  background-color: $white;
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow-lg;
-  padding: get-spacer(3);
-  border: $border-width $border-style $border-color;
-}
-
-.node-toolbar__node {
-  background-color: $white;
-  border-radius: $border-radius-lg;
-  border: ($border-width * 2) $border-style $black;
-  text-decoration: none;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-
-  span {
-    padding: get-spacer(1) get-spacer(2);
-    display: flex;
-    gap: get-spacer(2);
-  }
-
-  .node-toolbar__node__icon {
-    background-color: $primary;
-    color: $white;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 get-spacer(1);
-    border-radius: $border-radius 0 0 $border-radius;
-  }
-
-  @each $name, $color in $node-color-map {
-    &.--#{$name} {
-      border-color: $color;
-      .node-toolbar__node__icon {
-        background-color: $color;
-        color: color-contrast($color);
-      }
-    }
-  }
-}
-
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -401,12 +303,6 @@ main {
   }
 }
 
-#navbar-secondary {
-  display: flex;
-  align-items: center;
-  gap: get-spacer(2);
-}
-
 a.dropdown-toggle {
   text-decoration: none;
 }
@@ -426,7 +322,6 @@ a.disabled,
   opacity: 0.5 !important;
 }
 
-.navbar.bg-secondary a.dropdown-item,
 .dropdown-item {
   display: flex;
   gap: get-spacer(3);
@@ -828,13 +723,6 @@ input:focus {
   width: 100%;
 }
 
-.edit-state-badge {
-  position: absolute;
-  left: 50%;
-  z-index: 10;
-  transform: translate(-50%, 1rem);
-}
-
 .react-flow__panel.bottom.center {
   pointer-events: none !important;
   .toolbar__container {
@@ -863,3 +751,5 @@ input:focus {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@import "./ufc";

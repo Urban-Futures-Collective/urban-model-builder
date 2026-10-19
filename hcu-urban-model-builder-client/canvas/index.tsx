@@ -456,7 +456,7 @@ function Flow({
       <Panel position="bottom-center">
         <div className="toolbar__container" ref={toolbarContainerRef}></div>
       </Panel>
-      <Background />
+      <Background gap={24} size={1.5} />
       <Controls />
       <div
         className="sidebar__container sidebar__container--right"

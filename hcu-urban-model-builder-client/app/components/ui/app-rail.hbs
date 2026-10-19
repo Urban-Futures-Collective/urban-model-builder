@@ -1,0 +1,87 @@
+<nav class="app-rail" aria-label={{t "shell.rail_label"}}>
+  <LinkTo @route="index" class="app-rail__home" aria-label={{t "shell.home"}}>
+    <img src="/assets/images/umb-mark.svg" alt="" width="28" height="28" />
+  </LinkTo>
+
+  {{#if this.session.isAuthenticated}}
+    <LinkTo @route="models" class="app-rail__item">
+      <SvgIcon @icon="grid_view" @size="sm" />
+      <span>{{t "shell.models"}}</span>
+    </LinkTo>
+    <LinkTo @route="public-models" class="app-rail__item">
+      <SvgIcon @icon="public" @size="sm" />
+      <span>{{t "shell.public"}}</span>
+    </LinkTo>
+  {{else}}
+    <LinkTo @route="login" class="app-rail__item">
+      <SvgIcon @icon="login" @size="sm" />
+      <span>{{t "shell.login"}}</span>
+    </LinkTo>
+  {{/if}}
+  <a
+    href="https://citysciencelab.github.io/urban-model-builder/"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="app-rail__item"
+  >
+    <SvgIcon @icon="menu_book" @size="sm" />
+    <span>{{t "shell.docs"}}</span>
+  </a>
+
+  <div class="app-rail__spacer"></div>
+
+  <button
+    type="button"
+    class="app-rail__item app-rail__item--compact"
+    aria-label={{t "shell.language"}}
+    {{on "click" this.toggleLocale}}
+  >
+    <span class="app-rail__locale">{{this.otherLocaleName}}</span>
+  </button>
+
+  <BsDropdown @direction="right" class="app-rail__account" as |dd|>
+    <dd.toggle
+      class="app-rail__item app-rail__item--avatar"
+      aria-label={{t "shell.account"}}
+    >
+      {{#if this.session.isAuthenticated}}
+        <span class="app-rail__avatar">{{this.initials}}</span>
+      {{else}}
+        <SvgIcon @icon="account_circle" @size="md" />
+      {{/if}}
+    </dd.toggle>
+    <dd.menu as |ddm|>
+      {{#if this.session.isAuthenticated}}
+        <li class="app-rail__account-name">
+          {{this.userName}}
+        </li>
+      {{/if}}
+      <ddm.item>
+        <ddm.linkTo @route="impressum">{{t "general.imprint"}}</ddm.linkTo>
+      </ddm.item>
+      <ddm.item>
+        <ddm.linkTo @route="datenschutz">{{t
+            "general.privacy_policy"
+          }}</ddm.linkTo>
+      </ddm.item>
+      <ddm.item>
+        <ddm.linkTo @route="nutzungsbedingungen">{{t
+            "general.terms_of_service"
+          }}</ddm.linkTo>
+      </ddm.item>
+      {{#if this.session.isAuthenticated}}
+        <ddm.divider />
+        <ddm.item>
+          <button
+            type="button"
+            class="dropdown-item"
+            {{on "click" this.invalidateSession}}
+          >
+            <SvgIcon @icon="logout" @size="xs" />
+            {{t "actions.logout"}}
+          </button>
+        </ddm.item>
+      {{/if}}
+    </dd.menu>
+  </BsDropdown>
+</nav>

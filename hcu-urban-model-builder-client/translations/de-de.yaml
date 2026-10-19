@@ -15,6 +15,8 @@ general:
   terms_of_service: Nutzungsbedingungen
 
 landingpage:
+  eyebrow: Urban Futures Collective
+  video_title: Co-Modellierung mit dem Urban Model Builder (YouTube)
   title: Co-Modelliere deine Stadt
   subtitle: Open Source · Kostenlos · Kollaborativ
   description: Der Urban Model Builder ist eine Open-Source-Webanwendung, die es Ihnen ermöglicht, komplexe städtische Modelle zu erstellen und zu simulieren.
@@ -37,6 +39,10 @@ landingpage:
   oss: Open Source & Offene Standards
   oss_description: Der Urban Model Builder ist ein Open-Source-Projekt, das auf offenen Standards basiert. Als Simulations-Engine baut er auf der JavaScript Open-Source Bibliothek <a href="https://github.com/scottfr/simulation" target="_blank">simulation</a> auf, die vom <a href="https://insightmaker.com" target="_blank">Insight-Maker</a> Projekt stammt. Um Daten direkt aus der Urban Data Platform Hamburg zu integrieren, kann die offene OGC-API-Features Schnittstelle genutzt werden. Zum Teilen von Modellen für andere Anwendungen implementiert der Urban Model Builder den OGC-API-Processes Standard. Im Rahmen des <a href="https://connectedurbantwins.de" target="_blank">Connected Urban Twins</a> Projekts wurde er als Digital Public Infrastructure (DPI) entwickelt, um eine offene und zugängliche Plattform für die Modellierung urbaner Systeme zu schaffen. Frontend sowie Backend sind unter der <a href="https://www.gnu.org/licenses/gpl-3.0.de.html" target="_blank">GPL-3.0 Lizenz</a> lizenziert. Das bedeutet, dass der Quellcode frei zugänglich ist und von jedem genutzt, modifiziert und weiterverbreitet werden kann.
   footer:
+    ufc_name: Urban Futures Collective
+    ufc_text: Der Urban Model Builder wird vom Urban Futures Collective weiterentwickelt, das durch Forschung und Zusammenarbeit an gerechten urbanen Zukünften arbeitet.
+    cut: Connected Urban Twins
+    csl: City Science Lab Hamburg
     about_title: Entwickelt im Rahmen von
     about_text: am
     links_title: Links
@@ -374,3 +380,74 @@ time_units:
 error:
   404_title: "Seite nicht gefunden"
   404_message: "Entschuldigung, die Seite, die Sie suchen, existiert nicht."
+
+shell:
+  rail_label: Hauptnavigation
+  home: Startseite des Urban Model Builder
+  models: Modelle
+  public: Öffentlich
+  docs: Doku
+  login: Anmelden
+  language: Sprache wechseln
+  account: Konto
+
+login:
+  intro: Melden Sie sich an, um Modelle gemeinsam zu bauen, zu teilen und zu simulieren. Noch kein Konto? Registrieren Sie sich kostenlos.
+
+editor:
+  back_home: Zurück zur Startseite
+  back_to_library: Zurück zu meinen Modellen
+  demo_model: Demo-Modell
+  add_node: Knoten hinzufügen
+  add_node_of_type: "{type} hinzufügen"
+  run: Simulation starten
+  settings: Modelleinstellungen
+  dock_groups:
+    common: Basis
+    system-dynamics: SD
+    agent-based-modelling: ABM
+  node_types:
+    stock: Stock
+    flow: Flow
+    variable: Variable
+    converter: Converter
+    ogc-api-features: OGC API
+    folder: Folder
+    state: State
+    transition: Transition
+    action: Action
+    population: Population
+    agent: Agent
+
+library:
+  eyebrow: "Bibliothek · {count, plural, =0 {keine Modelle} =1 {1 Modell} other {# Modelle}}"
+  collections: Sammlungen
+  tab_mine: Meine Modelle
+  tab_public: Öffentliche Modelle
+  public_intro: Veröffentlichte Modelle aller Nutzenden des Urban Model Builder. Öffnen Sie ein Modell, um es zu erkunden, oder klonen Sie es, um darauf aufzubauen.
+  search_label: Modelle durchsuchen
+  search_placeholder: Nach Modellname suchen
+  clear_search: Suche zurücksetzen
+  view: Ansicht
+  grid_view: Kachelansicht
+  table_view: Tabellenansicht
+  continue: Weiterarbeiten
+  start: Start
+  new_hint: Mit einer leeren Arbeitsfläche beginnen.
+  empty_hint: Erstellen Sie Ihr erstes Modell, um loszulegen.
+  more_actions: Weitere Aktionen
+  edit_details: Details bearbeiten
+  nodes: "{count, plural, =0 {keine Knoten} =1 {1 Knoten} other {# Knoten}}"
+  node_mix_label: "Knotentypen dieses Modells ({count, plural, =1 {1 Knoten} other {# Knoten}})"
+  paradigm:
+    sd: "SD {percent} %"
+    abm: "ABM {percent} %"
+    geo: "Geo {percent} %"
+  columns:
+    name: Name
+    state: Status
+    version: Version
+    role: Rolle
+    author: Autor:in
+    edited: Bearbeitet
+    actions: Aktionen

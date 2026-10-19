@@ -1,0 +1,141 @@
+{{#let
+  (if
+    @model.latestDraftVersion
+    @model.latestDraftVersion
+    @model.latestPublishedVersion
+  )
+  as |currentModelVersion|
+}}
+  <article class="model-card {{if @featured 'model-card--featured'}}">
+    <LinkTo
+      @route="models.versions.show"
+      @models={{array @model.id currentModelVersion}}
+      class="model-card__link"
+    >
+      <div class="model-card__thumb" aria-hidden="true">
+        <div class="model-thumb">
+          {{#each this.thumbnail as |node|}}
+            <span class={{node.className}} style={{node.style}}></span>
+          {{/each}}
+        </div>
+        {{#if @featured}}
+          <span class="model-card__flag">{{t "library.continue"}}</span>
+        {{/if}}
+      </div>
+
+      <div class="model-card__body">
+        <div class="model-card__row">
+          {{#if this.isPublished}}
+            <span class="umb-chip umb-chip--published">
+              {{t "models.model.states.published"}}
+            </span>
+          {{else}}
+            <span class="umb-chip umb-chip--draft">
+              {{t "models.model.states.draft"}}
+            </span>
+          {{/if}}
+          <span
+            class="model-card__meta"
+            title={{concat
+              (t "general.modified_at")
+              ": "
+              (format-date
+                @model.updatedAt localeMatcher="lookup" format="dateTime"
+              )
+            }}
+          >
+            {{time-ago this.intl.primaryLocale @model.updatedAt}}
+          </span>
+        </div>
+
+        <h3 class="model-card__title">{{@model.internalName}}</h3>
+
+        {{#if @model.description}}
+          <p class="model-card__description">{{@model.description}}</p>
+        {{/if}}
+
+        <div
+          class="model-mix"
+          role="img"
+          aria-label={{t "library.node_mix_label" count=this.nodeCount}}
+        >
+          {{#each this.mix as |segment|}}
+            <span class={{segment.className}} style={{segment.style}}></span>
+          {{/each}}
+        </div>
+
+        <div class="model-card__row model-card__meta">
+          <span class="model-card__shares">
+            {{#each this.paradigms as |paradigm|}}
+              <span class="model-card__share">
+                {{t
+                  (concat "library.paradigm." paradigm.key)
+                  percent=paradigm.percent
+                }}
+              </span>
+            {{else}}
+              {{#if this.isLoading}}
+                {{t "actions.loading"}}
+              {{/if}}
+            {{/each}}
+          </span>
+          <span class="model-card__shares">
+            <span class="model-card__share model-card__count">
+              {{t "library.nodes" count=this.nodeCount}}
+            </span>
+            <span class="model-card__share">
+              {{#if this.isOwn}}
+                {{t "permissions.creator"}}
+              {{else if @model.role}}
+                {{t (concat "permissions." @model.role)}}
+              {{else}}
+                {{t "permissions.0"}}
+              {{/if}}
+            </span>
+          </span>
+        </div>
+
+        {{#if @showAuthor}}
+          <span class="model-card__author">{{@model.createdBy.email}}</span>
+        {{/if}}
+      </div>
+    </LinkTo>
+
+    {{#if (or @model.canEdit @model.canDelete)}}
+      <BsDropdown class="model-card__menu" @direction="down" as |dd|>
+        <dd.toggle
+          class="model-card__menu-toggle"
+          aria-label={{t "library.more_actions"}}
+        >
+          <SvgIcon @icon="more_horiz" @size="sm" />
+        </dd.toggle>
+        <dd.menu @align="end" as |ddm|>
+          {{#if @model.canEdit}}
+            <ddm.item>
+              <button
+                type="button"
+                class="dropdown-item"
+                {{on "click" (fn @startEditing @model)}}
+              >
+                <SvgIcon @icon="edit" @size="xs" />
+                {{t "library.edit_details"}}
+              </button>
+            </ddm.item>
+          {{/if}}
+          {{#if @model.canDelete}}
+            <ddm.item>
+              <button
+                type="button"
+                class="dropdown-item text-danger"
+                {{on "click" (fn @startDeleting @model)}}
+              >
+                <SvgIcon @icon="delete" @size="xs" />
+                {{t "actions.delete"}}
+              </button>
+            </ddm.item>
+          {{/if}}
+        </dd.menu>
+      </BsDropdown>
+    {{/if}}
+  </article>
+{{/let}}

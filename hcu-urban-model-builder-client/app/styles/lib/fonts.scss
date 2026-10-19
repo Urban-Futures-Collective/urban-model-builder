@@ -1,16 +1,16 @@
-/* montserrat-regular - latin */
+/* UFC brand fonts, self-hosted (copied from the UFC website repository) */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Montserrat";
+  font-display: swap;
+  font-family: "Poppins Variable";
   font-style: normal;
-  font-weight: 400;
-  src: url("../assets/fonts/montserrat-v29-latin-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  font-weight: 100 900;
+  src: url("../assets/fonts/ufc/Poppins-Variable.woff2") format("woff2");
 }
-/* montserrat-700 - latin */
+
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Montserrat";
+  font-display: swap;
+  font-family: "Satoshi Variable";
   font-style: normal;
-  font-weight: 700;
-  src: url("../assets/fonts/montserrat-v29-latin-700.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  font-weight: 300 900;
+  src: url("../assets/fonts/ufc/Satoshi-Variable.woff2") format("woff2");
 }

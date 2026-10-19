@@ -1,86 +1,117 @@
-<div class="card-header">
-  <h2 class="h3">
-    {{@title}}
-  </h2>
-  <div class="card-header-actions">
-    {{! search }}
-    <BsDropdown @onShow={{@onShowSearch}} @closeOnMenuClick={{false}} as |dd|>
-      <dd.button
-        @size="sm"
-        @type={{if @hasSearchQuery "primary" "tertiary"}}
-        class="search-button"
+<header class="library__header">
+  <div class="library__heading">
+    <span class="umb-eyebrow">
+      {{t "library.eyebrow" count=@total}}
+    </span>
+    <h1 class="library__title">{{@title}}</h1>
+    {{#if @intro}}
+      <p class="library__intro">{{@intro}}</p>
+    {{/if}}
+  </div>
+  {{#if @canCreate}}
+    <div class="library__actions">
+      <BsButton @type="primary" {{on "click" @startCreating}}>
+        <SvgIcon @icon="add" @size="sm" />
+        {{t "routes.models.index.add_model"}}
+      </BsButton>
+    </div>
+  {{/if}}
+</header>
+
+<nav class="library__tabs" aria-label={{t "library.collections"}}>
+  <LinkTo @route="models" class="library__tab">
+    {{t "library.tab_mine"}}
+  </LinkTo>
+  <LinkTo @route="public-models" class="library__tab">
+    {{t "library.tab_public"}}
+  </LinkTo>
+</nav>
+
+<div class="library__toolbar">
+  <form class="library__search" {{on "submit" this.submitSearch}}>
+    <label for="model-search-input" class="visually-hidden">
+      {{t "library.search_label"}}
+    </label>
+    <SvgIcon @icon="search" @size="sm" />
+    <input
+      id="model-search-input"
+      type="search"
+      value={{@searchQuery}}
+      placeholder={{t "library.search_placeholder"}}
+      {{on "input" @onSearchInput}}
+      {{on "change" @onSearchChange}}
+    />
+    {{#if @hasSearchQuery}}
+      <button
+        type="button"
+        class="library__search-clear"
+        aria-label={{t "library.clear_search"}}
+        {{on "click" @clearSearch}}
       >
-        {{#if @hasSearchQuery}}
+        <FaIcon @icon="remove" />
+      </button>
+    {{/if}}
+  </form>
+
+  <div class="library__toolbar-spacer"></div>
+
+  <BsDropdown @tagName="span" as |dd|>
+    <dd.button @size="sm" @type="tertiary">
+      <FaIcon @icon="arrow-down-a-z" />
+      {{t (concat "general." @sort_key "_" @sort_direction)}}
+      <span class="caret"></span>
+    </dd.button>
+    <dd.menu as |menu|>
+      <menu.item>
+        {{#if (not (and (eq @sort_key "createdAt") (eq @sort_direction -1)))}}
           <a
-            class="model-clear-search"
             href="javascript:void(0)"
-            {{on "click" (fn @clearSearch dd)}}
+            class="dropdown-item"
+            {{on "click" (fn @onSortChange "createdAt" -1)}}
           >
-            <FaIcon @icon="remove" />
+            {{t "general.createdAt_-1"}}
           </a>
-          <div class="model-search-preview">
-            {{@q}}
-          </div>
-        {{else}}
-          <FaIcon @icon="search" />
         {{/if}}
-      </dd.button>
-      <dd.menu>
-        <div class="model-search">
-          <Input
-            @value={{@searchQuery}}
-            id="model-search-input"
-            {{on "change" @onSearchChange}}
-          />
-          <BsButton @size="sm" @type="primary">
-            <FaIcon @icon="search" />
-          </BsButton>
-        </div>
-      </dd.menu>
-    </BsDropdown>
-    {{! sort }}
-    <BsDropdown @tagName="span" as |dd|>
-      <dd.button @size="sm" @type="tertiary">
-        <FaIcon @icon="arrow-down-a-z" />
-        {{t (concat "general." @sort_key "_" @sort_direction)}}
-        <span class="caret"></span>
-      </dd.button>
-      <dd.menu as |menu|>
-        <menu.item>
-          {{#if (not (and (eq @sort_key "createdAt") (eq @sort_direction -1)))}}
-            <a
-              href="javascript:void(0)"
-              class="dropdown-item"
-              {{on "click" (fn @onSortChange "createdAt" -1)}}
-            >
-              {{t "general.createdAt_-1"}}
-            </a>
-          {{/if}}
-          {{#if (not (and (eq @sort_key "createdAt") (eq @sort_direction 1)))}}
-            <a
-              href="javascript:void(0)"
-              class="dropdown-item"
-              {{on "click" (fn @onSortChange "createdAt" 1)}}
-            >
-              {{t "general.createdAt_1"}}
-            </a>
-          {{/if}}
-          {{#if (not (and (eq @sort_key "updatedAt") (eq @sort_direction -1)))}}
-            <a
-              href="javascript:void(0)"
-              class="dropdown-item"
-              {{on "click" (fn @onSortChange "updatedAt" -1)}}
-            >
-              {{t "general.updatedAt_-1"}}
-            </a>
-          {{/if}}
-        </menu.item>
-      </dd.menu>
-    </BsDropdown>
-    {{! create }}
-    <BsButton @type="primary" @size="sm" {{on "click" @startCreating}}>
-      <FaIcon @icon="plus" />
-      {{t "routes.models.index.add_model"}}
-    </BsButton>
+        {{#if (not (and (eq @sort_key "createdAt") (eq @sort_direction 1)))}}
+          <a
+            href="javascript:void(0)"
+            class="dropdown-item"
+            {{on "click" (fn @onSortChange "createdAt" 1)}}
+          >
+            {{t "general.createdAt_1"}}
+          </a>
+        {{/if}}
+        {{#if (not (and (eq @sort_key "updatedAt") (eq @sort_direction -1)))}}
+          <a
+            href="javascript:void(0)"
+            class="dropdown-item"
+            {{on "click" (fn @onSortChange "updatedAt" -1)}}
+          >
+            {{t "general.updatedAt_-1"}}
+          </a>
+        {{/if}}
+      </menu.item>
+    </dd.menu>
+  </BsDropdown>
+
+  <div class="library__view-toggle" role="group" aria-label={{t "library.view"}}>
+    <button
+      type="button"
+      class="library__view-button"
+      aria-pressed={{if (eq @view "grid") "true" "false"}}
+      aria-label={{t "library.grid_view"}}
+      {{on "click" (fn @onViewChange "grid")}}
+    >
+      <SvgIcon @icon="grid_view" @size="xs" />
+    </button>
+    <button
+      type="button"
+      class="library__view-button"
+      aria-pressed={{if (eq @view "table") "true" "false"}}
+      aria-label={{t "library.table_view"}}
+      {{on "click" (fn @onViewChange "table")}}
+    >
+      <SvgIcon @icon="view_list" @size="xs" />
+    </button>
   </div>
 </div>

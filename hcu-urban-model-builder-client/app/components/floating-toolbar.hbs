@@ -1,12 +1,16 @@
-<FloatingToolbar::PrimitivesModal @disabled={{@disabled}} />
-<FloatingToolbar::SimulateModal @model={{@model}} />
-{{#if this.applicationState.isDemoMode}}
-  <BsButton
-    @type="secondary"
-    class="btn-round"
-    @size="md"
-    @onClick={{this.modelDialogs.onShowSettingsDialog}}
-  >
-    <SvgIcon @icon="settings" @size="md" />
-  </BsButton>
-{{/if}}
+<div class="node-dock umb-float">
+  <FloatingToolbar::PrimitivesModal @disabled={{@disabled}} />
+  <div class="node-dock__actions">
+    {{#if this.applicationState.isDemoMode}}
+      <BsButton
+        @type="ghost"
+        class="node-dock__icon-button"
+        aria-label={{t "editor.settings"}}
+        @onClick={{this.modelDialogs.onShowSettingsDialog}}
+      >
+        <SvgIcon @icon="settings" @size="sm" />
+      </BsButton>
+    {{/if}}
+    <FloatingToolbar::SimulateModal @model={{@model}} />
+  </div>
+</div>

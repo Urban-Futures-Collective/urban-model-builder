@@ -100,7 +100,7 @@ $ghost-node-opacity: 0.66;
   font-size: $font-size-base;
   font-weight: $headings-font-weight;
   width: 100%;
-  border-radius: calc($border-radius-lg - 1px);
+  border-radius: 0; // per node type in _ufc.scss
   // border-bottom-right-radius: var(--xy-node-border-radius-default);
   // border-bottom-left-radius: var(--xy-node-border-radius-default);
   .react-flow__node-base__icon {

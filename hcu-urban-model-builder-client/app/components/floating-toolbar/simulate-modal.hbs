@@ -222,8 +222,13 @@
     {{#unless this.isSimulationPossible}}
       <BsTooltip @title={{t "components.simulate_modal.disabled_tooltip"}} />
     {{/unless}}
-    <BsButton @type="secondary" disabled={{not this.isSimulationPossible}}>
-      {{t "actions.simulate"}}
+    <BsButton
+      @type="primary"
+      class="node-dock__run"
+      disabled={{not this.isSimulationPossible}}
+    >
+      <SvgIcon @icon="play_arrow" @size="sm" />
+      {{t "editor.run"}}
     </BsButton>
   </modal.Trigger>
 

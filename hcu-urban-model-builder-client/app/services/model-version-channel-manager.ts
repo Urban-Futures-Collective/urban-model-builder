@@ -11,29 +11,37 @@ export default class ModelVersionChannelManagerService extends Service {
   @service declare feathers: FeathersService;
   @service declare router: RouterService;
 
+  private isListening = false;
+
   constructor(owner: Owner) {
     super(owner);
   }
 
   listen() {
-    this.router.on('routeDidChange', this.onRouteDidChange.bind(this));
-    this.feathers.app.on('authenticated', this.onAuthenticated.bind(this));
+    if (this.isListening) {
+      return;
+    }
+    this.router.on('routeDidChange', this.onRouteDidChange);
+    this.feathers.app.on('authenticated', this.onAuthenticated);
+    this.isListening = true;
   }
 
-  private async onRouteDidChange(transition: Transition) {
+  // Arrow functions keep `this` bound, so `off` receives the same reference
+  // that `on` registered.
+  private onRouteDidChange = async (transition: Transition) => {
     if (this.isModelVersionRoute(transition.from)) {
       await this.leaveChannel(transition.from);
     }
     if (this.isModelVersionRoute(transition.to)) {
       await this.joinChannel(transition.to);
     }
-  }
+  };
 
-  private async onAuthenticated() {
+  private onAuthenticated = async () => {
     if (this.isModelVersionRoute(this.router.currentRoute)) {
       await this.joinChannel(this.router.currentRoute);
     }
-  }
+  };
 
   private getModelVersionId(routeInfo: RouteInfo | RouteInfoWithAttributes) {
     return 'attributes' in routeInfo
@@ -64,8 +72,12 @@ export default class ModelVersionChannelManagerService extends Service {
   }
 
   willDestroy(): void {
+    if (!this.isListening) {
+      return;
+    }
     this.router.off('routeDidChange', this.onRouteDidChange);
     this.feathers.app.off('authenticated', this.onAuthenticated);
+    this.isListening = false;
   }
 }
 

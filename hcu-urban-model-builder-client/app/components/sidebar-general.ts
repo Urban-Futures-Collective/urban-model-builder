@@ -22,7 +22,9 @@ export interface SidebarGeneralSignature {
 }
 
 export default class SidebarGeneralComponent extends Component<SidebarGeneralSignature> {
-  @tracked isMinimized = false;
+  // Start collapsed: the title block already shows the model name, so the
+  // canvas stays clear until a panel is opened.
+  @tracked isMinimized = true;
   @tracked activeView = 'modelInfo';
   @service declare modelDialogs: ModelDialogsService;
 

@@ -1,47 +1,49 @@
-{{page-title (t "routes.models.index.title")}}
+{{page-title (t "routes.public_models.title")}}
 
-<div class="container main-content">
-  <div class="card">
-    {{! header }}
-    {{#let this._q as |searchQuery|}}
-      <ModelsIndexHeader
-        @title={{t "routes.public_models.list_of_models"}}
-        @onShowSearch={{this.onShowSearch}}
-        @hasSearchQuery={{this.hasSearchQuery}}
-        @q={{this.q}}
-        @searchQuery={{searchQuery}}
-        @clearSearch={{this.clearSearch}}
-        @onSearchChange={{this.onSearchChange}}
-        @sort_key={{this.sort_key}}
-        @sort_direction={{this.sort_direction}}
-        @onSortChange={{this.onSortChange}}
-        @startCreating={{this.startCreating}}
-      />
-    {{/let}}
-    {{! list }}
-    <ModelsIndexList
-      @persistedModels={{this.persistedModels}}
-      @user={{this.user}}
-      @intl={{this.intl}}
-      @startEditing={{this.startEditing}}
-      @startDeleting={{this.startDeleting}}
-      @hideOtherUsers={{true}}
+<div class="library">
+  <ModelsIndexHeader
+    @title={{t "routes.public_models.title"}}
+    @intro={{t "library.public_intro"}}
+    @total={{this.total}}
+    @canCreate={{false}}
+    @hasSearchQuery={{this.hasSearchQuery}}
+    @searchQuery={{this._q}}
+    @clearSearch={{this.clearSearch}}
+    @onSearchInput={{this.onSearchInput}}
+    @onSearchChange={{this.onSearchChange}}
+    @sort_key={{this.sort_key}}
+    @sort_direction={{this.sort_direction}}
+    @onSortChange={{this.onSortChange}}
+    @startCreating={{this.startCreating}}
+    @view={{this.view}}
+    @onViewChange={{this.onViewChange}}
+  />
+
+  <ModelsIndexList
+    @persistedModels={{this.persistedModels}}
+    @user={{this.user}}
+    @intl={{this.intl}}
+    @view={{this.view}}
+    @showNewTile={{false}}
+    @featureFirst={{false}}
+    @startCreating={{this.startCreating}}
+    @startEditing={{this.startEditing}}
+    @startDeleting={{this.startDeleting}}
+    @hideOtherUsers={{false}}
+  />
+
+  <footer class="library__footer">
+    <Ui::Pagination
+      @model={{this.persistedModels}}
+      @limit={{this.limit}}
+      @total={{this.model.meta.total}}
+      @page={{this.page}}
+      @onPageChanged={{this.onPageChanged}}
+      @onLimitChanged={{this.onLimitChanged}}
     />
-    {{! footer }}
-    <div class="card-footer model-index-footer text-body-secondary">
-      <Ui::Pagination
-        @model={{this.persistedModels}}
-        @limit={{this.limit}}
-        @total={{this.model.meta.total}}
-        @page={{this.page}}
-        @onPageChanged={{this.onPageChanged}}
-        @onLimitChanged={{this.onLimitChanged}}
-      />
-    </div>
-  </div>
+  </footer>
 </div>
 
-{{! Use the new component for the Modal / Form }}
 <Model::FormModal
   @isOpen={{this.isModalOpen}}
   @mode={{this.mode}}

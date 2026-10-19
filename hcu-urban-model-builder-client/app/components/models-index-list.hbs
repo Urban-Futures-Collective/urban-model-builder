@@ -1,131 +1,139 @@
-<BsListGroup class="list-group-flush" as |ListGroup|>
-  {{#let @persistedModels as |models|}}
-    {{#each models as |model|}}
-      {{#let
-        (if
-          model.latestDraftVersion
-          model.latestDraftVersion
-          model.latestPublishedVersion
-        )
-        as |currentModelVersion|
-      }}
-        <ListGroup.item class="list-group-with-actions">
-          <div class="list-group-body">
-            <div class="list-group-body-content">
-              {{! Model name }}
-              <LinkTo
-                @route="models.versions.show"
-                @models={{array model.id currentModelVersion}}
-                class="list-group-title"
-              >
-                {{model.internalName}}
-                {{! Published / Draft }}
-              </LinkTo>
-              <span class="meta">
-                {{#if currentModelVersion.publishedAt}}
-                  ({{t "models.model.states.published"}})
-                {{else}}
-                  ({{t "models.model.states.draft"}})
-                {{/if}}
-              </span>
-            </div>
-            {{! Meta }}
-            <div class="list-group-meta">
-              {{! Meta: Version }}
-              <Model::VersionSelect
-                @model={{model}}
-                @currentVersion={{currentModelVersion}}
-              />
-              {{! Permissions }}
-              <span
-                class="badge rounded-pill badge-success text-bg-secondary text-light"
-              >
-                <FaIcon @icon="shield" @fixedWidth={{false}} />
-                &nbsp;
-                {{#if (eq @user.currentUserId model.createdBy.id)}}
-                  {{t "permissions.creator"}}
-                {{else if model.role}}
-                  {{t (concat "permissions." model.role)}}
-                {{else}}
-                  {{t "permissions.0"}}
-                {{/if}}
-              </span>
+{{#let @persistedModels as |models|}}
+  {{#if (eq @view "table")}}
+    <div class="library__table-wrapper">
+      <table class="library__table">
+        <thead>
+          <tr>
+            <th scope="col">{{t "library.columns.name"}}</th>
+            <th scope="col">{{t "library.columns.state"}}</th>
+            <th scope="col">{{t "library.columns.version"}}</th>
+            <th scope="col">{{t "library.columns.role"}}</th>
+            {{#unless @hideOtherUsers}}
+              <th scope="col">{{t "library.columns.author"}}</th>
+            {{/unless}}
+            <th scope="col">{{t "library.columns.edited"}}</th>
+            <th scope="col"><span class="visually-hidden">{{t
+                  "library.columns.actions"
+                }}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each models as |model|}}
+            {{#let
+              (if
+                model.latestDraftVersion
+                model.latestDraftVersion
+                model.latestPublishedVersion
+              )
+              as |currentModelVersion|
+            }}
+              <tr>
+                <td>
+                  <LinkTo
+                    @route="models.versions.show"
+                    @models={{array model.id currentModelVersion}}
+                    class="library__table-name"
+                  >
+                    {{model.internalName}}
+                  </LinkTo>
+                </td>
+                <td>
+                  {{#if currentModelVersion.publishedAt}}
+                    <span class="umb-chip umb-chip--published">
+                      {{t "models.model.states.published"}}
+                    </span>
+                  {{else}}
+                    <span class="umb-chip umb-chip--draft">
+                      {{t "models.model.states.draft"}}
+                    </span>
+                  {{/if}}
+                </td>
+                <td class="umb-mono">
+                  <Model::VersionSelect
+                    @model={{model}}
+                    @currentVersion={{currentModelVersion}}
+                  />
+                </td>
+                <td>
+                  {{#if (eq @user.currentUserId model.createdBy.id)}}
+                    {{t "permissions.creator"}}
+                  {{else if model.role}}
+                    {{t (concat "permissions." model.role)}}
+                  {{else}}
+                    {{t "permissions.0"}}
+                  {{/if}}
+                </td>
+                {{#unless @hideOtherUsers}}
+                  <td>{{model.createdBy.email}}</td>
+                {{/unless}}
+                <td class="umb-mono">
+                  {{time-ago @intl.primaryLocale model.updatedAt}}
+                </td>
+                <td class="library__table-actions">
+                  {{#if model.canEdit}}
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm"
+                      aria-label={{t "library.edit_details"}}
+                      {{on "click" (fn @startEditing model)}}
+                    >
+                      <SvgIcon @icon="edit" @size="xs" />
+                    </button>
+                  {{/if}}
+                  {{#if model.canDelete}}
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm"
+                      aria-label={{t "actions.delete"}}
+                      {{on "click" (fn @startDeleting model)}}
+                    >
+                      <SvgIcon @icon="delete" @size="xs" />
+                    </button>
+                  {{/if}}
+                </td>
+              </tr>
+            {{/let}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{else}}
+    <div class="library__grid">
+      {{#if @showNewTile}}
+        <button
+          type="button"
+          class="model-card model-card--new"
+          {{on "click" @startCreating}}
+        >
+          <span class="umb-eyebrow">{{t "library.start"}}</span>
+          <span class="model-card--new__title">{{t
+              "routes.models.index.add_model"
+            }}</span>
+          <span class="model-card--new__hint">{{t "library.new_hint"}}</span>
+          <SvgIcon @icon="add" @size="2xl" />
+        </button>
+      {{/if}}
+      {{#each models as |model index|}}
+        <Model::Card
+          @model={{model}}
+          @featured={{and @featureFirst (eq index 0)}}
+          @showAuthor={{not @hideOtherUsers}}
+          @currentUserId={{@user.currentUserId}}
+          @startEditing={{@startEditing}}
+          @startDeleting={{@startDeleting}}
+        />
+      {{/each}}
+    </div>
+  {{/if}}
 
-              {{! Meta: Created at }}
-              <span
-                title={{concat
-                  (t "general.created_at")
-                  ": "
-                  (format-date
-                    model.createdAt localeMatcher="lookup" format="dateTime"
-                  )
-                }}
-              >
-                <FaIcon
-                  @icon="calendar-plus"
-                  @fixedWidth={{true}}
-                />{{format-date model.createdAt}}
-              </span>
-              {{! Meta: Updated at }}
-              <span
-                title={{concat
-                  (t "general.modified_at")
-                  ": "
-                  (format-date
-                    model.updatedAt localeMatcher="lookup" format="dateTime"
-                  )
-                }}
-              >
-                <FaIcon @icon="code-commit" @fixedWidth={{true}} />
-                {{time-ago @intl.primaryLocale model.updatedAt}}
-              </span>
-              {{! Created By }}
-              {{#if
-                (not
-                  (and
-                    @hideOtherUsers
-                    (not (eq model.createdBy.id @user.currentUserId))
-                  )
-                )
-              }}
-                <span>
-                  <FaIcon @icon="user" @fixedWidth={{true}} />
-                  {{model.createdBy.email}}
-                </span>
-              {{/if}}
-            </div>
-          </div>
-          {{! Actions }}
-          <div class="list-group-actions">
-            <LinkTo
-              @route="models.versions.show"
-              @models={{array model.id currentModelVersion}}
-            >
-              <FaIcon @icon="eye" />
-            </LinkTo>
-            <a
-              href="#"
-              class="{{if model.canEdit '' 'disabled'}}"
-              {{on "click" (fn @startEditing model)}}
-            >
-              <FaIcon @icon="pencil" />
-            </a>
-            <a
-              href="#"
-              class="{{if model.canDelete '' 'disabled'}}"
-              {{on "click" (fn @startDeleting model)}}
-            >
-              <FaIcon @icon="trash" />
-            </a>
-          </div>
-        </ListGroup.item>
-      {{/let}}
-    {{else}}
-      <ListGroup.item>
-        <div class="list-group-body">
-          {{t "routes.models.index.no_models_found"}}
-        </div>
-      </ListGroup.item>
-    {{/each}}
-  {{/let}}
-</BsListGroup>
+  {{#unless models.length}}
+    <div class="library__empty">
+      <p class="library__empty-title">{{t
+          "routes.models.index.no_models_found"
+        }}</p>
+      {{#if @showNewTile}}
+        <p>{{t "library.empty_hint"}}</p>
+      {{/if}}
+    </div>
+  {{/unless}}
+{{/let}}

@@ -1,0 +1,63 @@
+<div class="title-block umb-float" role="banner">
+  {{#if this.applicationState.isDemoMode}}
+    <LinkTo
+      @route="index"
+      class="title-block__home"
+      aria-label={{t "editor.back_home"}}
+    >
+      <img src="/assets/images/umb-mark.svg" alt="" width="24" height="24" />
+    </LinkTo>
+  {{else}}
+    <LinkTo
+      @route="models"
+      class="title-block__home"
+      aria-label={{t "editor.back_to_library"}}
+    >
+      <img src="/assets/images/umb-mark.svg" alt="" width="24" height="24" />
+    </LinkTo>
+  {{/if}}
+
+  <div class="title-block__cell title-block__identity">
+    <span class="title-block__name">
+      {{#if this.applicationState.isDemoMode}}
+        {{t "editor.demo_model"}}
+      {{else}}
+        {{@modelVersion.model.internalName}}
+      {{/if}}
+    </span>
+    <span class="title-block__meta">
+      {{#unless this.applicationState.isDemoMode}}
+        <Model::VersionSelect
+          @model={{@modelVersion.model}}
+          @currentVersion={{@modelVersion}}
+        />
+      {{/unless}}
+      {{#if this.applicationState.isDemoMode}}
+        <span class="umb-chip umb-chip--draft">
+          {{t "components.edit_state_badge.demo_mode.title"}}
+        </span>
+        <BsTooltip
+          @title={{t "components.edit_state_badge.demo_mode.tooltip"}}
+          @placement="bottom"
+        />
+      {{else if @modelVersion.isPublished}}
+        <span class="umb-chip umb-chip--published">
+          {{t "models.model.states.published"}}
+        </span>
+      {{else}}
+        <span class="umb-chip umb-chip--draft">
+          {{t "models.model.states.draft"}}
+        </span>
+      {{/if}}
+      {{#if this.isReadOnly}}
+        <span class="umb-chip umb-chip--quiet">
+          {{t "components.model_info.view_mode"}}
+        </span>
+        <BsTooltip
+          @title={{t "components.edit_state_badge.view_mode.tooltip"}}
+          @placement="bottom"
+        />
+      {{/if}}
+    </span>
+  </div>
+</div>

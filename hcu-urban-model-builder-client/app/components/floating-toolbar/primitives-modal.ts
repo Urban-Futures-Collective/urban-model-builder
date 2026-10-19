@@ -1,16 +1,18 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 import { NodeType } from 'hcu-urban-model-builder-backend';
 import { decamelize, dasherize } from '@ember/string';
 import type EventBus from 'hcu-urban-model-builder-client/services/event-bus';
-import type FloatingToolbarDropdownManagerService from 'hcu-urban-model-builder-client/services/floating-toolbar-dropdown-manager';
 
+/**
+ * The node dock: the always-visible palette of node types at the bottom of
+ * the canvas (replaces the former "+" dropdown).
+ */
 export interface FloatingToolbarPrimitivesModalSignature {
   // The arguments accepted by the component
-  Args: {};
+  Args: { disabled?: boolean };
   // Any blocks yielded by the component
   Blocks: {
     default: [];
@@ -43,8 +45,6 @@ type NodeTypeConfig = {
 
 export default class FloatingToolbarPrimitivesModalComponent extends Component<FloatingToolbarPrimitivesModalSignature> {
   @service declare eventBus: EventBus;
-  @service
-  declare floatingToolbarDropdownManager: FloatingToolbarDropdownManagerService;
 
   readonly nodeGroups = [
     {
@@ -83,33 +83,7 @@ export default class FloatingToolbarPrimitivesModalComponent extends Component<F
     };
   }
 
-  @action
-  toggleDropdown() {
-    this.floatingToolbarDropdownManager.togglePin('primitivesModal');
-  }
-
-  @action onOpen() {
-    this.floatingToolbarDropdownManager.onOpen('primitivesModal');
-    return true;
-  }
-
-  @action onClose() {
-    return !this.floatingToolbarDropdownManager.isPrimitivesDropdownPinned;
-  }
-
   @action onNodeClick(config: NodeTypeConfig) {
     this.eventBus.emit('primitive-modal:create-clicked', config);
-    this.floatingToolbarDropdownManager.dropdownInstances[
-      'primitivesModal'
-    ]?.actions.close();
-  }
-
-  @action removePinOnClose(dd: any) {
-    if (
-      dd.isOpen &&
-      this.floatingToolbarDropdownManager.isPrimitivesDropdownPinned
-    ) {
-      this.floatingToolbarDropdownManager.isPrimitivesDropdownPinned = false;
-    }
   }
 }

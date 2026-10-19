@@ -1,30 +1,33 @@
 {{page-title (t "routes.login.title")}}
 
-<div class="container main-content landingpage">
-  <div class="card card--login w-75 w-md-50">
-    <div class="card-header">
-      <h2 class="h3">
-        {{t "actions.login"}}
-      </h2>
-    </div>
-    <div class="card-body">
-      <LinkTo
-        @route="authenticate"
-        class="btn btn-primary"
-        aria-pressed="false"
-      >
-        <span>
-          {{t "actions.login"}}
-        </span>
+<div class="login">
+  <section class="login__brand">
+    <img
+      src="/assets/images/umb-mark-white.svg"
+      alt=""
+      width="56"
+      height="56"
+    />
+    <h1>{{t "landingpage.title"}}</h1>
+    <img
+      class="landing__ufc-logo"
+      src="/assets/images/ufc-logo-white.svg"
+      alt={{t "landingpage.footer.ufc_name"}}
+    />
+  </section>
+
+  <section class="login__panel">
+    <span class="umb-eyebrow">{{t "general.brand"}}</span>
+    <h2>{{t "actions.login"}}</h2>
+    <p>{{t "login.intro"}}</p>
+    <div class="login__actions">
+      <LinkTo @route="authenticate" class="btn btn-primary btn-lg">
+        <span>{{t "actions.login"}}</span>
         <FaIcon @icon="right-to-bracket" />
       </LinkTo>
-      <a
-        class="btn btn-secondary"
-        role="button"
-        href="{{this.registrationUrl}}"
-      >
+      <a class="btn btn-secondary btn-lg" href={{this.registrationUrl}}>
         {{t "actions.register"}}
       </a>
     </div>
-  </div>
+  </section>
 </div>
