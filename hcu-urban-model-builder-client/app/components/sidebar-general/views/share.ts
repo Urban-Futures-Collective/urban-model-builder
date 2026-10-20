@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-import type ModelDialogsService from 'hcu-urban-model-builder-client/services/model-dialogs';
+import type EditorSidebarService from 'hcu-urban-model-builder-client/services/editor-sidebar';
 import type ModelsVersion from 'hcu-urban-model-builder-client/models/models-version';
 import type RouterService from '@ember/routing/router-service';
 import type FeathersService from 'hcu-urban-model-builder-client/services/feathers';
@@ -10,7 +10,6 @@ export interface SidebarGeneralViewsShareSignature {
   // The arguments accepted by the component
   Args: {
     modelVersion: ModelsVersion;
-    onShowSimulateDialog: (value: boolean) => void;
   };
   // Any blocks yielded by the component
   Blocks: {
@@ -21,7 +20,7 @@ export interface SidebarGeneralViewsShareSignature {
 }
 
 export default class SidebarGeneralViewsShareComponent extends Component<SidebarGeneralViewsShareSignature> {
-  @service declare modelDialogs: ModelDialogsService;
+  @service declare editorSidebar: EditorSidebarService;
   @service declare feathers: FeathersService;
   @service declare router: RouterService;
 

@@ -1,0 +1,236 @@
+<span class={{if this.isSimulationPossible "" "disabled"}}>
+  {{#unless this.isSimulationPossible}}
+    <BsTooltip @title={{t "components.simulate_modal.disabled_tooltip"}} />
+  {{/unless}}
+  <BsButton
+    @type="primary"
+    class="node-dock__run"
+    disabled={{not this.isSimulationPossible}}
+    aria-expanded={{if this.show "true" "false"}}
+    @onClick={{this.togglePanel}}
+  >
+    <SvgIcon @icon="play_arrow" @size="sm" />
+    {{t "editor.run"}}
+  </BsButton>
+</span>
+
+{{#if this.show}}
+  {{! Floating panel instead of a dropdown: stays open while editing and can
+      be dragged by its header. Rendered into the body so the dock's
+      positioning does not constrain it. }}
+  {{#in-element this.panelHost insertBefore=null}}
+    <section
+      class="simulate-panel umb-float
+        {{if this.isDragging 'simulate-panel--dragging'}}"
+      style={{this.panelStyle}}
+      aria-label={{t "components.simulate_modal.title"}}
+      {{did-insert this.didInsertPanel}}
+    >
+      {{! Dragging has to start on pointer down }}
+      {{! template-lint-disable no-pointer-down-event-binding }}
+      <header
+        class="simulate-panel__header"
+        {{on "pointerdown" this.startDrag}}
+      >
+        <span class="simulate-panel__grip" aria-hidden="true">
+          <SvgIcon @icon="drag_indicator" @size="sm" />
+        </span>
+        <h4 class="simulate-panel__title">
+          {{t "components.simulate_modal.title"}}
+        </h4>
+        <BsButton
+          @type="ghost"
+          class="simulate-panel__close"
+          aria-label={{t "actions.close"}}
+          @onClick={{this.closePanel}}
+        >
+          <SvgIcon @icon="close" @size="sm" />
+        </BsButton>
+      </header>
+      <div class="simulate-panel__body">
+        <BsForm as |form|>
+          {{#if this.ALLOW_SERVER_SIDE_SIMULATION}}
+            <form.element
+              @controlType="switch"
+              @label={{t "components.simulate_modal.is_client_side"}}
+              @value={{this.isClientSideCalculation}}
+              @onChange={{this.toggleClientSideCalculation}}
+            />
+          {{/if}}
+          {{! ERROR }}
+          <BsAlert
+            @type="danger"
+            @visible={{this.hasError}}
+            @fade={{false}}
+            @dismissible={{false}}
+          >
+            <strong>
+              {{#if this.simulationErrorNode}}
+                {{t "models.node.error"}}
+                <a
+                  href="javascript:void(0)"
+                  class="simulate-model__error-node__select-link"
+                  {{on
+                    "click"
+                    (fn
+                      this.emberReactConnector.select
+                      "node"
+                      this.simulationErrorNode.id
+                    )
+                  }}
+                >
+                  [{{this.simulationErrorNode.name}}]
+                </a>
+                :
+              {{else}}
+                {{t "messages.error"}}:
+              {{/if}}
+            </strong>
+            {{this.simulationError.message}}
+          </BsAlert>
+          {{#if (and this.currentDataset (not this.hasError))}}
+            <BsNav @type="tabs" as |nav|>
+              {{#each this.tabNames as |tabName|}}
+                <nav.item>
+                  <a
+                    href="javascript:void(0)"
+                    class="nav-link {{if (this.isTabActive tabName) 'active'}}"
+                    {{on "click" (fn this.switchTab tabName)}}
+                  >
+                    {{titleize tabName}}
+                  </a>
+                </nav.item>
+              {{/each}}
+            </BsNav>
+          {{/if}}
+          {{#if this.simulationTask.isRunning}}
+            <BsSpinner>
+              {{t "actions.loading"}}
+            </BsSpinner>
+          {{/if}}
+          <div
+            class="simulate-model__chart-container"
+            {{did-insert this.didInsertChartContainer}}
+          >
+          </div>
+          {{#if (and this.currentDataset (not this.hasError))}}
+            <div class="simulate-model__range__wrapper">
+              <div class="simulate-model__range">
+                <label for="time-range" class="form-label">
+                  {{t "components.simulate_modal.controls"}}
+                </label>
+                <Input
+                  @type="range"
+                  class="form-range"
+                  min={{0.01}}
+                  max={{100}}
+                  step={{0.01}}
+                  id="time-range"
+                  @value={{this.animationCursor}}
+                  {{on "change" this.updateDatasetFromAnimationCursor}}
+                />
+              </div>
+
+              <BsButton
+                @type="secondary"
+                class="btn-round"
+                {{on "click" this.playPause}}
+              >
+                <FaIcon @icon={{if this.isPlaying "pause" "play"}} />
+              </BsButton>
+
+              <BsDropdown as |dd|>
+                <dd.button @type="link">
+                  {{! template-lint-disable no-bare-strings }}
+                  {{this.speed}}x
+                  <span class="caret"></span>
+                </dd.button>
+                <dd.menu as |menu|>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 0.2)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      0.2x
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 0.5)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      0.5x
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 1)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      1x ({{t "components.simulate_modal.default_speed"}})
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 1.5)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      1.5x
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 2)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      2x
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 5)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      5x
+                    </a>
+                  </menu.item>
+                  <menu.item>
+                    <a
+                      href="#"
+                      class="dropdown-item"
+                      {{on "click" (fn this.setSpeed 10)}}
+                    >
+                      {{! template-lint-disable no-bare-strings }}
+                      10x
+                    </a>
+                  </menu.item>
+                </dd.menu>
+              </BsDropdown>
+
+              <BsButton
+                @type="outline-secondary"
+                class="btn-sm ms-2"
+                {{on "click" this.downloadSimulationResults}}
+                disabled={{not this.simulationResult}}
+              >
+                <FaIcon @icon="download" @prefix="fas" />
+              </BsButton>
+            </div>
+          {{/if}}
+        </BsForm>
+      </div>
+    </section>
+  {{/in-element}}
+{{/if}}

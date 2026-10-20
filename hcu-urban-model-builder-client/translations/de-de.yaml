@@ -73,6 +73,8 @@ actions:
   save: Speichern
   save_for_everyone: Für alle speichern
   cancel: Abbrechen
+  reset: Zurücksetzen
+  back: Zurück
   clone: Klonen
   unsaved_changes: Sie haben ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?
   register: Registrieren
@@ -220,6 +222,7 @@ components:
     matching: Passende Datensätze
     in_limit: Datensätze im Limit
     preview: Vorschau
+    hide_preview: Vorschau ausblenden
     collection_label: Sammlung
     apis_label: APIs
     limit_label: Limit
@@ -401,7 +404,6 @@ editor:
   add_node: Knoten hinzufügen
   add_node_of_type: "{type} hinzufügen"
   run: Simulation starten
-  settings: Modelleinstellungen
   dock_groups:
     common: Basis
     system-dynamics: SD

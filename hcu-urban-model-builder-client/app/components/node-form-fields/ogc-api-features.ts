@@ -39,7 +39,7 @@ export default class NodeFormFieldsOgcApiFeaturesComponent extends Component<Nod
 
   @service declare ogcApiFeatures: OgcApiFeaturesService;
 
-  @tracked showPreviewModal = false;
+  @tracked showPreview = false;
   @tracked jsonPointer = '';
   @tracked jsonPointerValue = '';
 

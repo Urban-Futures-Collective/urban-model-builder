@@ -4,8 +4,4 @@
 
 <ReactWrapper @model={{this.model}} />
 
-<Model::SettingsDialog
-  @open={{this.modelDialogs.showSettingsModal}}
-  @model={{this.model}}
-  @onClose={{this.modelDialogs.hideSettingsDialog}}
-/>
+<SidebarGeneral @model={{this.model}} @views={{array "settings"}} />

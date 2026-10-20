@@ -39,6 +39,10 @@ $umb-titleblock-height: 48px;
 $umb-dock-height: 56px;
 $umb-inspector-width: 360px;
 $umb-float-inset: 12px;
+// One size for every pill (state chips, version select, badges)
+$umb-chip-height: 18px;
+$umb-chip-padding-x: 7px;
+$umb-chip-font-size: 0.625rem;
 
 // Lines and shadow
 $umb-frame: 1.5px solid $umb-ink; // floating panels over the canvas

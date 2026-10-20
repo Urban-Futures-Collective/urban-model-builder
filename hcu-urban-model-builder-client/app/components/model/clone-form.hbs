@@ -1,0 +1,25 @@
+<div class="panel-form" {{did-insert this.prepare}}>
+  <p>
+    {{t "components.clone_dialog.intro"}}
+  </p>
+  <BsForm
+    @formLayout="vertical"
+    @model={{this.changeset}}
+    @onSubmit={{this.onSubmit}}
+    as |form|
+  >
+    <form.element
+      @controlType="text"
+      @label={{t "models.model.attributes.name"}}
+      @property="internalName"
+    />
+  </BsForm>
+  <div class="panel-form__buttons">
+    <Ui::ModalButtons
+      @onCancel={{this.onHide}}
+      @onSubmit={{this.onSubmit}}
+      @cancelText={{t "actions.cancel"}}
+      @submitText={{t "actions.clone"}}
+    />
+  </div>
+</div>

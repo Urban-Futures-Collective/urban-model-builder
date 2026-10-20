@@ -5,28 +5,3 @@
 <ReactWrapper @model={{this.model}} />
 
 <SidebarGeneral @model={{this.model}} />
-
-<Model::PublishDialog
-  @open={{this.modelDialogs.showPublishModal}}
-  @model={{this.model}}
-  @onClose={{this.modelDialogs.hidePublishingDialog}}
-/>
-
-<Model::CloneDialog
-  @open={{this.modelDialogs.showCloneModal}}
-  @model={{this.model}}
-  @onClose={{this.modelDialogs.hideCloneDialog}}
-/>
-
-<Model::ShareModal
-  @open={{this.modelDialogs.showShareModal}}
-  @model={{this.model.model}}
-  @modelVersion={{this.model}}
-  @onClose={{this.modelDialogs.hideShareDialog}}
-/>
-
-<Model::SettingsDialog
-  @open={{this.modelDialogs.showSettingsModal}}
-  @model={{this.model}}
-  @onClose={{this.modelDialogs.hideSettingsDialog}}
-/>

@@ -16,12 +16,11 @@ import type UserService from 'hcu-urban-model-builder-client/services/user';
 import type ModelModel from 'hcu-urban-model-builder-client/models/model';
 import type RouterService from '@ember/routing/router-service';
 
-export interface ModelShareModalSignature {
+export interface ModelShareFormSignature {
   // The arguments accepted by the component
   Args: {
     model: ModelModel;
     modelVersion: ModelsVersion;
-    onClose: () => void;
   };
   // Any blocks yielded by the component
   Blocks: {
@@ -31,7 +30,7 @@ export interface ModelShareModalSignature {
   Element: null;
 }
 
-export default class ModelShareModalComponent extends Component<ModelShareModalSignature> {
+export default class ModelShareFormComponent extends Component<ModelShareFormSignature> {
   @service declare store: Store;
   @service declare intl: IntlService;
   @service declare user: UserService;
@@ -121,11 +120,6 @@ export default class ModelShareModalComponent extends Component<ModelShareModalS
     this.loadPermissions();
 
     await this.initChangeset();
-  }
-
-  @action onHide() {
-    this.args.onClose();
-    return false;
   }
 
   @action async onSubmit() {

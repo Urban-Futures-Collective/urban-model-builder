@@ -616,7 +616,7 @@ fieldset {
   margin-top: get-spacer(3);
 }
 
-.share-modal__permissions__badge__trigger {
+.share-form__permissions__badge__trigger {
   gap: 0.5rem;
 }
 
@@ -630,12 +630,15 @@ fieldset {
 
 .ember-power-select-multiple-options {
   .ember-power-select-multiple-option {
-    padding: get-spacer(1);
-    background-color: $color-primary;
-    color: $black;
+    background-color: $umb-paper;
+    color: $umb-ink;
     border-radius: $border-radius-pill;
-    border: 0;
+    border: 1px solid $umb-ink;
     padding: get-spacer(1) get-spacer(2);
+
+    .ember-power-select-multiple-remove-btn {
+      color: $umb-ink;
+    }
   }
 
   .ember-power-select-trigger-multiple-input:focus {

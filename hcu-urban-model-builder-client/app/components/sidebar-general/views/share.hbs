@@ -1,65 +1,109 @@
-<div class="sidebar__header">
-  <h4 class="mb-0">
-    {{t "models.model.version_settings.title"}}
-  </h4>
-
-  <div class="sidebar__header__row">
-    <Model::VersionSelect
-      @model={{@modelVersion.model}}
-      @currentVersion={{@modelVersion}}
-    />
-    {{! Badget: Latest }}
-    {{#if @modelVersion.isLatest}}
-      &nbsp;
-      <span class="badge rounded-pill badge-success text-bg-light">
-        {{t "components.share.latest"}}
-      </span>
-    {{/if}}
-  </div>
-</div>
-<div class="sidebar__content">
-  <div id="version-settings">
-
-    <h5>
-      {{t "models.model.version_settings.actions"}}
-    </h5>
-    {{! Action: New Draft }}
-    <div class="actions">
-      <a
-        href="javascript:void(0)"
-        class="action-item {{if @modelVersion.canCreateNewDraft '' 'disabled'}}"
-        {{on "click" this.onCreateNewDraftVersion}}
+{{#if this.editorSidebar.shareAction}}
+  {{! Publish, share and clone open in the panel instead of a dialog }}
+  <div class="sidebar__header">
+    <div class="sidebar__header__row">
+      <BsButton
+        @type="ghost"
+        class="sidebar__back"
+        aria-label={{t "actions.back"}}
+        @onClick={{this.editorSidebar.endShareAction}}
       >
-        <SvgIcon @icon="edit" @size="md" />
-        {{t "components.share.new_draft"}}
-      </a>
-      {{! Action: Publish -> Dialog }}
-      <a
-        href="javascript:void(0)"
-        class="action-item {{if @modelVersion.canPublish '' 'disabled'}}"
-        {{on "click" this.modelDialogs.onStartPublish}}
-      >
-        <SvgIcon @icon="upload" @size="md" />
-        {{t "components.share.publish"}}
-      </a>
-      {{! Action: Share -> Dialog }}
-      <a
-        href="javascript:void(0)"
-        class="action-item {{if @modelVersion.canShare '' 'disabled'}}"
-        {{on "click" this.modelDialogs.onStartShare}}
-      >
-        <SvgIcon @icon="share" @size="md" />
-        {{t "components.share.share"}}
-      </a>
-      {{! Action: Clone -> Dialog }}
-      <a
-        href="javascript:void(0)"
-        class="action-item"
-        {{on "click" this.modelDialogs.onStartClone}}
-      >
-        <SvgIcon @icon="content_copy" @size="md" />
-        {{t "components.share.clone"}}
-      </a>
+        <SvgIcon @icon="chevron_left" @size="sm" />
+      </BsButton>
+      <h4 class="mb-0">
+        {{#if (eq this.editorSidebar.shareAction "publish")}}
+          {{t "components.publish_dialog.title"}}
+        {{else if (eq this.editorSidebar.shareAction "share")}}
+          {{t "components.share_modal.title"}}
+        {{else}}
+          {{t "components.clone_dialog.title"}}
+        {{/if}}
+      </h4>
     </div>
   </div>
-</div>
+  <div class="sidebar__content">
+    {{#if (eq this.editorSidebar.shareAction "publish")}}
+      <Model::PublishForm
+        @model={{@modelVersion}}
+        @onClose={{this.editorSidebar.endShareAction}}
+      />
+    {{else if (eq this.editorSidebar.shareAction "share")}}
+      <Model::ShareForm
+        @model={{@modelVersion.model}}
+        @modelVersion={{@modelVersion}}
+      />
+    {{else}}
+      <Model::CloneForm
+        @model={{@modelVersion}}
+        @onClose={{this.editorSidebar.endShareAction}}
+      />
+    {{/if}}
+  </div>
+{{else}}
+  <div class="sidebar__header">
+    <h4 class="mb-0">
+      {{t "models.model.version_settings.title"}}
+    </h4>
+
+    <div class="sidebar__header__row">
+      <Model::VersionSelect
+        @model={{@modelVersion.model}}
+        @currentVersion={{@modelVersion}}
+      />
+      {{! Badget: Latest }}
+      {{#if @modelVersion.isLatest}}
+        &nbsp;
+        <span class="badge rounded-pill badge-success text-bg-light">
+          {{t "components.share.latest"}}
+        </span>
+      {{/if}}
+    </div>
+  </div>
+  <div class="sidebar__content">
+    <div id="version-settings">
+
+      <h5>
+        {{t "models.model.version_settings.actions"}}
+      </h5>
+      {{! Action: New Draft }}
+      <div class="actions">
+        <a
+          href="javascript:void(0)"
+          class="action-item
+            {{if @modelVersion.canCreateNewDraft '' 'disabled'}}"
+          {{on "click" this.onCreateNewDraftVersion}}
+        >
+          <SvgIcon @icon="edit" @size="md" />
+          {{t "components.share.new_draft"}}
+        </a>
+        {{! Action: Publish -> form in this panel }}
+        <a
+          href="javascript:void(0)"
+          class="action-item {{if @modelVersion.canPublish '' 'disabled'}}"
+          {{on "click" (fn this.editorSidebar.startShareAction "publish")}}
+        >
+          <SvgIcon @icon="upload" @size="md" />
+          {{t "components.share.publish"}}
+        </a>
+        {{! Action: Share -> form in this panel }}
+        <a
+          href="javascript:void(0)"
+          class="action-item {{if @modelVersion.canShare '' 'disabled'}}"
+          {{on "click" (fn this.editorSidebar.startShareAction "share")}}
+        >
+          <SvgIcon @icon="share" @size="md" />
+          {{t "components.share.share"}}
+        </a>
+        {{! Action: Clone -> form in this panel }}
+        <a
+          href="javascript:void(0)"
+          class="action-item"
+          {{on "click" (fn this.editorSidebar.startShareAction "clone")}}
+        >
+          <SvgIcon @icon="content_copy" @size="md" />
+          {{t "components.share.clone"}}
+        </a>
+      </div>
+    </div>
+  </div>
+{{/if}}

@@ -9,7 +9,7 @@ import type { FormModelPublish } from 'global';
 import { inject as service } from '@ember/service';
 import type IntlService from 'ember-intl/services/intl';
 
-export interface ModelPublishDialogSignature {
+export interface ModelPublishFormSignature {
   // The arguments accepted by the component
   Args: {
     model: ModelsVersion;
@@ -23,7 +23,7 @@ export interface ModelPublishDialogSignature {
   Element: null;
 }
 
-export default class ModelPublishDialogComponent extends Component<ModelPublishDialogSignature> {
+export default class ModelPublishFormComponent extends Component<ModelPublishFormSignature> {
   @service intl!: IntlService;
   @tracked changeset!: EmberChangeset;
   @tracked formModel!: FormModelPublish;

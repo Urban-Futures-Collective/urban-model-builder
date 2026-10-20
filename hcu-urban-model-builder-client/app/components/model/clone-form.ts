@@ -10,7 +10,7 @@ import type EmberRouter from '@ember/routing/router';
 import { inject as service } from '@ember/service';
 import type IntlService from 'ember-intl/services/intl';
 
-export interface ModelCloneDialogSignature {
+export interface ModelCloneFormSignature {
   Args: {
     model: ModelsVersion;
     onClose: () => void;
@@ -21,7 +21,7 @@ export interface ModelCloneDialogSignature {
   Element: null;
 }
 
-export default class ModelCloneDialogComponent extends Component<ModelCloneDialogSignature> {
+export default class ModelCloneFormComponent extends Component<ModelCloneFormSignature> {
   @service declare router: EmberRouter;
   @service intl!: IntlService;
   @tracked changeset!: EmberChangeset;

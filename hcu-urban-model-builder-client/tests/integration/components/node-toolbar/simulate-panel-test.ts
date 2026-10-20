@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 
 module(
-  'Integration | Component | floating-toolbar/simulate-modal',
+  'Integration | Component | floating-toolbar/simulate-panel',
   function (hooks) {
     setupRenderingTest(hooks);
 
@@ -12,15 +12,15 @@ module(
       // Set any properties with this.set('myProperty', 'value');
       // Handle any actions with this.set('myAction', function(val) { ... });
 
-      await render(hbs`<FloatingToolbar::SimulateModal />`);
+      await render(hbs`<FloatingToolbar::SimulatePanel />`);
 
       assert.dom().hasText('');
 
       // Template block usage:
       await render(hbs`
-      <FloatingToolbar::SimulateModal>
+      <FloatingToolbar::SimulatePanel>
         template block text
-      </FloatingToolbar::SimulateModal>
+      </FloatingToolbar::SimulatePanel>
     `);
 
       assert.dom().hasText('template block text');

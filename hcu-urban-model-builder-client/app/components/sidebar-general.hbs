@@ -1,17 +1,18 @@
 {{#let @model as |modelVersion|}}
   <div
     class="sidebar__container sidebar__container--left
-      {{if this.isMinimized 'sidebar__container--minimized'}}"
+      {{if this.editorSidebar.isMinimized 'sidebar__container--minimized'}}"
   >
     <div class="sidebar">
       <SidebarGeneral::Nav
-        @activeView={{this.activeView}}
-        @isMinimized={{this.isMinimized}}
-        @minimize={{this.minimize}}
-        @selectActiveView={{this.selectActiveView}}
+        @activeView={{this.editorSidebar.activeView}}
+        @isMinimized={{this.editorSidebar.isMinimized}}
+        @minimize={{this.editorSidebar.toggleMinimized}}
+        @selectActiveView={{this.editorSidebar.open}}
         @modelVersion={{modelVersion}}
+        @views={{@views}}
       />
-      {{#unless this.isMinimized}}
+      {{#unless this.editorSidebar.isMinimized}}
         {{#if this.sidebarViewComponent}}
           <this.sidebarViewComponent @modelVersion={{modelVersion}} />
         {{/if}}

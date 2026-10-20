@@ -1,5 +1,4 @@
-.primitives-card,
-.simulate-card {
+.primitives-card {
   background-color: $white;
   border-color: $border-color;
   border-width: $border-width;
@@ -9,8 +8,7 @@
   padding: get-spacer(3);
   min-width: 512px;
   margin-bottom: 3rem;
-  .primitives-card__row,
-  .simulate-card__row {
+  .primitives-card__row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -54,12 +52,8 @@
     }
   }
 }
-.ember-basic-dropdown-content:has(.primitives-card, .simulate-card) {
+.ember-basic-dropdown-content:has(.primitives-card) {
   background-color: transparent;
-}
-
-.simulate-card {
-  min-width: 600px;
 }
 
 .ember-basic-dropdown-trigger--above::after {

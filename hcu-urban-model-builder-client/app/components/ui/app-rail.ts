@@ -40,8 +40,10 @@ export default class UiAppRailComponent extends Component<UiAppRailSignature> {
   }
 
   @action toggleLocale() {
-    this.intl.setLocale(this.otherLocale);
-    localStorage.setItem('locale', this.otherLocale);
+    // Read once: otherLocale flips as soon as setLocale runs.
+    const locale = this.otherLocale;
+    this.intl.setLocale(locale);
+    localStorage.setItem('locale', locale);
     window.location.reload();
   }
 

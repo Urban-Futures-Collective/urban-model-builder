@@ -19,12 +19,11 @@ import type EmberReactConnectorService from 'hcu-urban-model-builder-client/serv
 import type StoreEventEmitterService from 'hcu-urban-model-builder-client/services/store-event-emitter';
 import { task, timeout } from 'ember-concurrency';
 import config from 'hcu-urban-model-builder-client/config/environment';
-import type FloatingToolbarDropdownManagerService from 'hcu-urban-model-builder-client/services/floating-toolbar-dropdown-manager';
-import type ModelDialogsService from 'hcu-urban-model-builder-client/services/model-dialogs';
 import { cached } from '@glimmer/tracking';
 import { TrackedAsyncData } from 'ember-async-data';
+import { htmlSafe } from '@ember/template';
 
-export interface FloatingToolbarSimulateModalSignature {
+export interface FloatingToolbarSimulatePanelSignature {
   // The arguments accepted by the component
   Args: {
     model: ModelsVersion;
@@ -47,10 +46,10 @@ type SimulationResult = Awaited<
 >;
 
 type TimeSeriesDataset = Awaited<
-  ReturnType<FloatingToolbarSimulateModalComponent['getTimeSeriesDataset']>
+  ReturnType<FloatingToolbarSimulatePanelComponent['getTimeSeriesDataset']>
 >;
 type ScatterPlotDataset = Awaited<
-  ReturnType<FloatingToolbarSimulateModalComponent['getScatterPlotDataset']>
+  ReturnType<FloatingToolbarSimulatePanelComponent['getScatterPlotDataset']>
 >;
 
 type ChartSeries = {
@@ -61,9 +60,14 @@ type ChartSeries = {
 
 const BASE_SPEED = 20;
 
-type EmberBasicDropdownAPI = { actions: { close: () => void } };
+// Where the panel was dragged to, kept across page loads
+const POSITION_STORAGE_KEY = 'umb-simulate-panel-position';
+// Part of the panel that must stay on screen when it is dragged or restored
+const MIN_VISIBLE_PX = 80;
 
-export default class FloatingToolbarSimulateModalComponent extends Component<FloatingToolbarSimulateModalSignature> {
+type PanelPosition = { left: number; top: number };
+
+export default class FloatingToolbarSimulatePanelComponent extends Component<FloatingToolbarSimulatePanelSignature> {
   readonly DEBOUNCE_MS = 250;
 
   @service declare feathers: FeathersService;
@@ -71,12 +75,14 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
   @service declare storeEventEmitter: StoreEventEmitterService;
   @service declare eventBus: EventBus;
   @service declare emberReactConnector: EmberReactConnectorService;
-  @service
-  declare floatingToolbarDropdownManager: FloatingToolbarDropdownManagerService;
-  @service declare modelDialogs: ModelDialogsService;
-  basicDropdownInstance: EmberBasicDropdownAPI | null = null;
 
   @tracked show = false;
+
+  // null: default place (CSS), until the panel is dragged
+  @tracked position: PanelPosition | null = readStoredPosition();
+  @tracked isDragging = false;
+  panelElement?: HTMLElement;
+  panelHost = document.body;
 
   @tracked isClientSideCalculation = true;
   @tracked activeTab: TabName = TabName.TimeSeries;
@@ -183,23 +189,87 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
     return scenarioNodeValueMap;
   }
 
-  @action
-  onOpen() {
-    this.floatingToolbarDropdownManager.onOpen('simulateModal');
-    this.show = true;
-    this.simulationTask.perform();
-    return this.show;
+  get panelStyle() {
+    if (!this.position) {
+      return undefined;
+    }
+    return htmlSafe(
+      `left: ${this.position.left}px; top: ${this.position.top}px; transform: none;`,
+    );
   }
 
   @action
-  onClose() {
-    const canClose =
-      !this.floatingToolbarDropdownManager.isSimulateDropdownPinned;
-
-    if (canClose) {
-      this.show = false;
+  togglePanel() {
+    if (this.show) {
+      this.closePanel();
+    } else {
+      this.show = true;
+      this.simulationTask.perform();
     }
-    return canClose;
+  }
+
+  @action
+  closePanel() {
+    this.show = false;
+    this.isPlaying = false;
+    this.simulationTask.cancelAll();
+    this.chart?.dispose();
+    this.chart = undefined;
+  }
+
+  @action
+  didInsertPanel(element: HTMLElement) {
+    this.panelElement = element;
+    if (this.position) {
+      // the window may have shrunk since the position was stored
+      this.position = this.clampPosition(this.position);
+    }
+  }
+
+  @action
+  startDrag(event: PointerEvent) {
+    const target = event.target as HTMLElement;
+    if (event.button !== 0 || target.closest('button') || !this.panelElement) {
+      return;
+    }
+    event.preventDefault();
+
+    const rect = this.panelElement.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    this.isDragging = true;
+
+    const onMove = (moveEvent: PointerEvent) => {
+      this.position = this.clampPosition({
+        left: moveEvent.clientX - offsetX,
+        top: moveEvent.clientY - offsetY,
+      });
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      this.isDragging = false;
+      storePosition(this.position);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  }
+
+  clampPosition(position: PanelPosition): PanelPosition {
+    const width = this.panelElement?.offsetWidth ?? MIN_VISIBLE_PX;
+    return {
+      left: Math.min(
+        Math.max(position.left, MIN_VISIBLE_PX - width),
+        window.innerWidth - MIN_VISIBLE_PX,
+      ),
+      // keep the header reachable
+      top: Math.min(
+        Math.max(position.top, 0),
+        window.innerHeight - MIN_VISIBLE_PX,
+      ),
+    };
   }
 
   @action
@@ -425,8 +495,13 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
 
             for (const stateLocation of current) {
               // Type guard to ensure we're working with an object that has the expected properties
-              if (typeof stateLocation === 'object' && stateLocation !== null &&
-                  'id' in stateLocation && 'location' in stateLocation && 'state' in stateLocation) {
+              if (
+                typeof stateLocation === 'object' &&
+                stateLocation !== null &&
+                'id' in stateLocation &&
+                'location' in stateLocation &&
+                'state' in stateLocation
+              ) {
                 const location = {
                   id: stateLocation.id,
                   value: stateLocation.location,
@@ -594,20 +669,6 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
   }
 
   @action
-  toggleDropdown() {
-    this.floatingToolbarDropdownManager.togglePin('simulateModal');
-  }
-
-  @action removePinOnClose(dd: any) {
-    if (
-      dd.isOpen &&
-      this.floatingToolbarDropdownManager.isSimulateDropdownPinned
-    ) {
-      this.floatingToolbarDropdownManager.isSimulateDropdownPinned = false;
-    }
-  }
-
-  @action
   async downloadSimulationResults() {
     if (!this.simulationResult) {
       return;
@@ -620,11 +681,13 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
     // Transform simulationResult to use node names instead of UUIDs
     const resultsWithNodeNames = {
       times: this.simulationResult.times,
-      nodes: {} as Record<string, any>
+      nodes: {} as Record<string, any>,
     };
 
     // Replace node UUIDs with node names in the results
-    for (const [nodeId, nodeData] of Object.entries(this.simulationResult.nodes)) {
+    for (const [nodeId, nodeData] of Object.entries(
+      this.simulationResult.nodes,
+    )) {
       try {
         const node = await this.store.findRecord<Node>('node', nodeId);
         const nodeName = node.name || nodeId; // fallback to UUID if name is empty
@@ -675,5 +738,27 @@ export default class FloatingToolbarSimulateModalComponent extends Component<Flo
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  }
+}
+
+function readStoredPosition(): PanelPosition | null {
+  try {
+    const stored = JSON.parse(
+      localStorage.getItem(POSITION_STORAGE_KEY) ?? 'null',
+    );
+    if (typeof stored?.left === 'number' && typeof stored?.top === 'number') {
+      return stored;
+    }
+  } catch {
+    // unreadable or blocked storage: use the default place
+  }
+  return null;
+}
+
+function storePosition(position: PanelPosition | null) {
+  try {
+    localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(position));
+  } catch {
+    // storage blocked: the position is kept only until the page is left
   }
 }

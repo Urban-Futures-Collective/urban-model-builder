@@ -17,7 +17,6 @@ import {
 export interface SidebarGeneralViewsModelInfoSignature {
   // The arguments accepted by the component
   Args: {
-    onShowSettingsDialog: (value: boolean) => void;
     modelVersion: ModelsVersion;
   };
   // Any blocks yielded by the component
@@ -35,7 +34,7 @@ export default class SidebarGeneralViewsModelInfoComponent extends Component<Sid
   @tracked changeset: TrackedChangeset<ModelModel> | null = null;
 
   // OGC Endpoints management
-  @tracked showAddModal = false;
+  @tracked isAddingEndpoint = false;
   @tracked newEndpointName = '';
   @tracked newEndpointUrl = '';
   @tracked isCheckingApiType = false;
@@ -68,8 +67,8 @@ export default class SidebarGeneralViewsModelInfoComponent extends Component<Sid
       : [DEFAULT_OGC_ENDPOINT];
   }
 
-  @action showAddEndpointModal() {
-    this.showAddModal = true;
+  @action startAddingEndpoint() {
+    this.isAddingEndpoint = true;
     this.newEndpointName = '';
     this.newEndpointUrl = '';
     this.detectedApiType = null;
@@ -77,8 +76,8 @@ export default class SidebarGeneralViewsModelInfoComponent extends Component<Sid
     this.isCheckingApiType = false;
   }
 
-  @action closeAddEndpointModal() {
-    this.showAddModal = false;
+  @action cancelAddingEndpoint() {
+    this.isAddingEndpoint = false;
     this.newEndpointName = '';
     this.newEndpointUrl = '';
     this.detectedApiType = null;
@@ -194,7 +193,7 @@ export default class SidebarGeneralViewsModelInfoComponent extends Component<Sid
       newEndpoint,
     ]);
     if (saved) {
-      this.closeAddEndpointModal();
+      this.cancelAddingEndpoint();
     }
   }
 

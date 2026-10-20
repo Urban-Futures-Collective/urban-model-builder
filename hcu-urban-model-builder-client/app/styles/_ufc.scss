@@ -80,13 +80,14 @@ h6,
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 22px;
-  padding: 0 10px;
+  height: $umb-chip-height;
+  padding: 0 $umb-chip-padding-x;
   border: 1px solid $umb-ink;
   border-radius: 999px;
   font-family: $umb-font-headings;
-  font-size: 0.6875rem;
+  font-size: $umb-chip-font-size;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -115,10 +116,18 @@ h6,
   box-shadow: $umb-shadow-float;
 }
 
+// Same metrics as .umb-chip, so version pills and state chips line up
 .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: $umb-chip-height;
+  padding: 0 $umb-chip-padding-x;
   border-radius: 999px;
   font-family: $umb-font-headings;
+  font-size: $umb-chip-font-size;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.03em;
 }
 
@@ -1009,10 +1018,6 @@ $thumb-radius: (
   font-size: 0.75rem;
   color: $umb-meta;
 
-  .badge {
-    height: 22px;
-    padding: 0 10px;
-  }
 }
 
 // Sidebars become framed panels: the left one sits under the title block.
@@ -1030,8 +1035,14 @@ $thumb-radius: (
     border-radius: 0 !important;
   }
 
+  // Square cells as wide as the logo cell of the title block above
   .nav-link {
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $umb-titleblock-height;
+    height: $umb-titleblock-height;
+    padding: 0;
     color: $umb-ink;
     border-bottom: $umb-hairline;
 
@@ -1233,14 +1244,12 @@ $dock-radius: (
   padding: 0;
 }
 
-.simulate-card,
 .primitives-card {
   border: $umb-frame;
   border-radius: 0;
   box-shadow: $umb-shadow-float;
   margin-bottom: 12px;
 
-  .simulate-card__row a,
   .primitives-card__row a {
     border-radius: 0;
     &.pinned {
@@ -1249,6 +1258,99 @@ $dock-radius: (
         fill: $umb-on-ink;
       }
     }
+  }
+}
+
+// Simulation results: a floating panel, dragged by its header. Default place
+// is top centre; once dragged, left/top come from an inline style.
+.simulate-panel {
+  position: fixed;
+  z-index: 1057;
+  top: calc(#{$umb-titleblock-height} + 2 * #{$umb-float-inset});
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  width: min(640px, calc(100vw - 2 * #{$umb-float-inset}));
+  max-height: calc(
+    100vh - #{$umb-titleblock-height} - #{$umb-dock-height} - 5 * #{$umb-float-inset}
+  );
+}
+
+.simulate-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 8px;
+  border-bottom: $umb-hairline;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  .simulate-panel--dragging & {
+    cursor: grabbing;
+  }
+}
+
+.simulate-panel__grip {
+  display: flex;
+  color: $umb-meta;
+}
+
+.simulate-panel__title {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.simulate-panel__close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.simulate-panel__body {
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+}
+
+// Forms that open inside a sidebar panel instead of a modal dialog
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .row {
+    row-gap: 4px;
+  }
+}
+
+.panel-form__buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: $umb-hairline;
+}
+
+.sidebar__back {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: -8px;
+}
+
+.ogc-api-features__preview {
+  margin-top: 12px;
+
+  pre {
+    max-height: 320px;
+    padding: 8px;
+    overflow: auto;
+    font-size: 0.75rem;
+    background: $umb-paper-2;
+    border: $umb-hairline;
   }
 }
 
@@ -1302,6 +1404,12 @@ $dock-radius: (
   letter-spacing: $umb-heading-tracking;
   border-radius: calc(var(--node-radius, 0px) - 2px)
     calc(var(--node-radius, 0px) - 2px) 0 0;
+
+  // Without a footer the header fills the node: round its bottom too, or its
+  // background covers the node's rounded outline.
+  &:last-child {
+    border-radius: calc(var(--node-radius, 0px) - 2px);
+  }
 }
 
 .react-flow__node-base--single-tag {

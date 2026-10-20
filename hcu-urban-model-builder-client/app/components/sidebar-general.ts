@@ -1,17 +1,18 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 import type ModelsVersion from 'hcu-urban-model-builder-client/models/models-version';
 import { ensureSafeComponent } from '@embroider/util';
 import { importSync } from '@embroider/macros';
 import { dasherize } from '@ember/string';
-import type ModelDialogsService from 'hcu-urban-model-builder-client/services/model-dialogs';
+import type EditorSidebarService from 'hcu-urban-model-builder-client/services/editor-sidebar';
+import type { SidebarView } from 'hcu-urban-model-builder-client/services/editor-sidebar';
 
 export interface SidebarGeneralSignature {
   // The arguments accepted by the component
   Args: {
     model: ModelsVersion;
+    // Views to offer; all of them when omitted (the demo shows only settings)
+    views?: SidebarView[];
   };
   // Any blocks yielded by the component
   Blocks: {
@@ -22,18 +23,15 @@ export interface SidebarGeneralSignature {
 }
 
 export default class SidebarGeneralComponent extends Component<SidebarGeneralSignature> {
-  // Start collapsed: the title block already shows the model name, so the
-  // canvas stays clear until a panel is opened.
-  @tracked isMinimized = true;
-  @tracked activeView = 'modelInfo';
-  @service declare modelDialogs: ModelDialogsService;
+  @service declare editorSidebar: EditorSidebarService;
 
   get sidebarViewComponent() {
-    if (!this.activeView) {
+    const activeView = this.editorSidebar.activeView;
+    if (!activeView) {
       return null;
     }
     try {
-      const fileName = dasherize(this.activeView);
+      const fileName = dasherize(activeView);
       const module = importSync(`./sidebar-general/views/${fileName}`) as any;
 
       return ensureSafeComponent(module.default, this);
@@ -43,16 +41,9 @@ export default class SidebarGeneralComponent extends Component<SidebarGeneralSig
     }
   }
 
-  @action minimize() {
-    this.isMinimized = !this.isMinimized;
-  }
-
-  @action selectActiveView(view: string) {
-    if (view == 'settings') {
-      this.modelDialogs.onShowSettingsDialog();
-    } else {
-      this.isMinimized = false;
-      this.activeView = view;
-    }
+  willDestroy() {
+    super.willDestroy();
+    // the next model opens with a collapsed panel again
+    this.editorSidebar.reset();
   }
 }

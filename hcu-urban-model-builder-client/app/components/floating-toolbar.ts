@@ -1,8 +1,5 @@
-import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import type ModelModel from 'hcu-urban-model-builder-client/models/model';
-import type ApplicationStateService from 'hcu-urban-model-builder-client/services/application-state';
-import type ModelDialogsService from 'hcu-urban-model-builder-client/services/model-dialogs';
 
 export interface FloatingToolbarSignature {
   // The arguments accepted by the component
@@ -17,7 +14,4 @@ export interface FloatingToolbarSignature {
   Element: null;
 }
 
-export default class FloatingToolbarComponent extends Component<FloatingToolbarSignature> {
-  @service declare applicationState: ApplicationStateService;
-  @service declare modelDialogs: ModelDialogsService;
-}
+export default class FloatingToolbarComponent extends Component<FloatingToolbarSignature> {}

@@ -73,6 +73,8 @@ actions:
   save: Save
   save_for_everyone: Save for everyone
   cancel: Cancel
+  reset: Reset
+  back: Back
   clone: Clone
   unsaved_changes: You have unsaved changes. Do you really want to leave the page?
   register: Register
@@ -220,6 +222,7 @@ components:
     matching: Matching items
     in_limit: Within limit
     preview: Preview
+    hide_preview: Hide preview
     collection_label: Collection
     apis_label: APIs
     limit_label: Limit
@@ -401,7 +404,6 @@ editor:
   add_node: Add node
   add_node_of_type: Add {type}
   run: Run simulation
-  settings: Model settings
   dock_groups:
     common: Common
     system-dynamics: SD

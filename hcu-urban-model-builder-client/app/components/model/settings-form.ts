@@ -8,10 +8,9 @@ import ModelSettingsValidations from '../../validations/model-settings';
 import { inject as service } from '@ember/service';
 import type IntlService from 'ember-intl/services/intl';
 
-export interface ModelSettingsDialogSignature {
+export interface ModelSettingsFormSignature {
   Args: {
     model: ModelsVersion;
-    onClose: () => void;
   };
   Blocks: {
     default: [];
@@ -19,7 +18,7 @@ export interface ModelSettingsDialogSignature {
   Element: null;
 }
 
-export default class ModelSettingsDialogComponent extends Component<ModelSettingsDialogSignature> {
+export default class ModelSettingsFormComponent extends Component<ModelSettingsFormSignature> {
   @service intl!: IntlService;
   @tracked changeset!: EmberChangeset;
 
@@ -65,14 +64,9 @@ export default class ModelSettingsDialogComponent extends Component<ModelSetting
     if (this.changeset.isValid) {
       this.changeset.execute();
       await this.args.model.save();
-      this.args.onClose();
+      this.prepare();
     } else {
       console.dir(this.changeset.errors);
     }
-  }
-
-  @action onHide() {
-    this.args.onClose();
-    return false;
   }
 }
